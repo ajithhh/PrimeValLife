@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TUT.IAuth;
 using PrimeValLife.Core.Infrastructure;
+using PrimeValLife.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContextPool<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PrimeValLifeDB"));
+});
+builder.Services.AddDbContextPool<PrimeValLifeDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("PrimeValLifeDB"));
 });
