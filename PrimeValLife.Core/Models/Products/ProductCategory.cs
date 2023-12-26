@@ -7,7 +7,10 @@ namespace PrimeValLife.Core.Models.Products
     [PrimaryKey(nameof(Product.ProductId),nameof(Category.CategoryId))]
     public class ProductCategory
     {
-        public Product Product { get; set; }
+        public int ProductCategoryId { get; set; }
+
+        [ForeignKey("Product")]
+        public int ProductId { get; set; }
         public Category Category { get; set; }
     }
 
