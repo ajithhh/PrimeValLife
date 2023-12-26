@@ -3,6 +3,7 @@ using PrimeValLife.Core.Models.Orders;
 using PrimeValLife.Core.Models.Others;
 using PrimeValLife.Core.Models.Products;
 using PrimeValLife.Core.Models.Users;
+using PrimeValLife.Core.Models.Vendors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,9 @@ namespace PrimeValLife.Core
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<ProductVariation> ProductVariation { get; set; }
+        public DbSet<ProductInfo> ProductInfos { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Vendor> Vendors { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
@@ -35,5 +39,10 @@ namespace PrimeValLife.Core
         public DbSet<Wishlist> Wishlists { get; set; }
         public DbSet<WishlistItem> WishlistItems { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

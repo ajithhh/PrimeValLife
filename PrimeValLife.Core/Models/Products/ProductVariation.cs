@@ -1,14 +1,17 @@
-﻿namespace PrimeValLife.Core.Models.Products
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PrimeValLife.Core.Models.Products
 {
     public class ProductVariation
     {
         public int ProductVariationId { get; set; }
-        public int ProductId { get; set; }
-        public string Name { get; set; }
-        public decimal PriceAdjustment { get; set; }
-        public int StockQuantity { get; set; }
+        public string VariationType {  get; set; }
 
-        public Product Product { get; set; }
+        [ForeignKey("Product")]
+         public int ProductId {  get; set; }
+        public string VariationValue { get; set; }
+
+
     }
 
 }
