@@ -19,6 +19,8 @@ namespace PrimeValLife.Web.Models
         public string SKU { get; set; }
         public List<Review> ProductReview { get; set; }
         public List<Product> ProductsRelated { get; set; }
+        public List<ProductImages> ProductImages { get; set; }
+
 
     }
 }

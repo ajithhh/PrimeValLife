@@ -28,6 +28,7 @@ namespace PrimeValLife.Core
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<ProductVariation> ProductVariation { get; set; }
         public DbSet<ProductInfo> ProductInfos { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<Address> Addresses { get; set; }
