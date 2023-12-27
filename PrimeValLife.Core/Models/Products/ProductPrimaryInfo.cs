@@ -8,7 +8,7 @@ namespace PrimeValLife.Core.Models.Products
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
-        public int ProductType { get; set; }
+        public string ProductType { get; set; }
 
         public DateOnly MFG { get; set; }
 
