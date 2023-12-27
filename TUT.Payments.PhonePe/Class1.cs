@@ -2,9 +2,7 @@
 
 namespace TUT.Payments.PhonePe
 {
-    public class HomeController : Controller
-    {
-        public async Task<JsonResult> GeneratePaymentLink(VerifyRequestModel phonePePayment)
+    public async Task<JsonResult> GeneratePaymentLink(VerifyRequestModel phonePePayment)
         {
             try
             {
@@ -79,8 +77,6 @@ namespace TUT.Payments.PhonePe
                 return Json(new { Success = false, Message = "Verification failed", Error = ex.Message });
             }
         }
-
-    }
 
     public class VerifyRequestModel
     {

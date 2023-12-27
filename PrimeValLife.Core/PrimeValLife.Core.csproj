@@ -16,6 +16,10 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="IRepository\" />
+    <Folder Include="Repository\" />
+    <Folder Include="IServices\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

@@ -4,11 +4,11 @@ using System.Diagnostics;
 
 namespace PrimeValLife.Admin.Controllers
 {
-    public class ProductController : Controller
+    public class HomeController : Controller
     {
-        private readonly ILogger<ProductController> _logger;
+        private readonly ILogger<HomeController> _logger;
 
-        public ProductController(ILogger<ProductController> logger)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
