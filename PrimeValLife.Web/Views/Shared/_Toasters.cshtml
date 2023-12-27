@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+.fi-rs-exclamation
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastSuccessLive"class="toast align-items-center border-2 border-success"role="alert"aria-live="assertive"aria-atomic="true">
+        <div class="d-flex">
+            <div class="d-flex toast-body">
+                <i class="fi fi-rs-check me-1"></i>
+                <span id="toastContent"></span>
+            </div>
+            <button type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastErrorLive" class="toast align-items-center border-2 border-danger" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="d-flex toast-body">
+                <i class="fi fi-rs-exclamation me-1"></i>
+                <span id="toastContent">Some Error Message</span>
+            </div>
+            <button type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<script>
+    const toastSuccessLive = document.getElementById('toastSuccessLive');
+    const toastErrorLive = document.getElementById('toastErrorLive');
+    function ShowToaster(message,type="success") {
+        let toastBootstrap;
+        if (type == "success") {
+            toastSuccessLive.querySelector("#toastContent").innerText = message
+            toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastSuccessLive);
+        }
+        else {
+            toastErrorLive.querySelector("#toastContent").innerText = message
+            toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastErrorLive);
+        }
+        toastBootstrap.show();
+    }
+    
+
+    
+</script>

@@ -17,6 +17,7 @@
     <!-- Template CSS -->
     <link rel="stylesheet" href="assets/css/plugins/slider-range.css" />
     <link rel="stylesheet" href="assets/css/main.css?v=5.6" />
+    <link href="~/assets/css/pv-style.css" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/common.css" />
     @RenderSection("styles", required: false)
 </head>
@@ -380,6 +381,7 @@
     </div>
     <!--End header-->
     @RenderBody()
+    @Html.Partial("_Toasters")
     <footer class="main">
         
         <section class="featured section-padding">

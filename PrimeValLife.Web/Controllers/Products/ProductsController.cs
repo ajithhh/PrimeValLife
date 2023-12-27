@@ -21,6 +21,7 @@ namespace PrimeValLife.Web.Controllers.Products
                 }
             });
             productView.Product = product;
+            productView.Product.StockQuantity = 5;
             productView.ProductName = "Test Name";//Redundant use product
             productView.ProductImages = new List<ProductImage>()
             {

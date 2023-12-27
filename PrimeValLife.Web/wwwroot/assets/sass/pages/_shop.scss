@@ -1158,7 +1158,7 @@
 	
 }
 .button {
-	&.button-add-to-cart {
+	&.button-add-to-cart, .button.button-buy-now {
 		padding: 8px 40px;
 	}
 }
@@ -1178,19 +1178,23 @@
 		margin: 0 5px;
 		transition: all 0.5s ease-out 0s;
 		-webkit-transition: all 0.5s ease-out 0s;
+
 		&:hover {
 			background-color: $color-brand;
 			color: #fff;
+
 			i {
 				opacity: 1;
 			}
 		}
+
 		i {
 			font-size: 18px;
 			opacity: 0.6;
 		}
 	}
-	.button.button-add-to-cart {
+
+	.button.button-add-to-cart, .button.button-buy-now {
 		position: relative;
 		padding: 0px 20px;
 		border-radius: 5px;
@@ -1200,6 +1204,7 @@
 		font-weight: 700;
 		font-size: $font-md;
 		font-family: $font-heading;
+
 		i {
 			margin-right: 10px;
 		}
