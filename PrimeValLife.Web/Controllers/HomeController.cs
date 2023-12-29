@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PrimeValLife.Web.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace PrimeValLife.Web.Controllers
 {
@@ -16,6 +17,14 @@ namespace PrimeValLife.Web.Controllers
 
         public IActionResult Index()
         {
+            ClaimsPrincipal currentUser = HttpContext.User;
+
+            if (currentUser != null && currentUser.Identity != null && currentUser.Identity.IsAuthenticated)
+            {
+                string? userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                string? username = currentUser.FindFirst(ClaimTypes.Name)?.Value;
+                string? email = currentUser.FindFirst(ClaimTypes.Email)?.Value;
+            }
             return View();
         }
 

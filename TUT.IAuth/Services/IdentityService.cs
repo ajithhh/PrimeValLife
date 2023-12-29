@@ -1,8 +1,10 @@
 ﻿namespace TUT.IAuth.Services;
 
+using Azure;
 using Microsoft.AspNetCore.Identity;
 using TUT.IAuth.IServices;
 using TUT.IAuth.Models;
+using TUT.Utilities.Models;
 
 public class IdentityService(UserManager<IdentityUser> userManager,
     SignInManager<IdentityUser> signInManager) : IIdentityService
@@ -10,19 +12,48 @@ public class IdentityService(UserManager<IdentityUser> userManager,
     private readonly UserManager<IdentityUser> userManager = userManager;
     private readonly SignInManager<IdentityUser> signInManager = signInManager;
 
-    public async Task<bool> RegisterUser(PvlUser pvlUser)
+    public async Task<ResponseItem<string>> RegisterUser(TUTUser tutUser)
     {
+        ResponseItem<string> response = new();
         IdentityUser user = new()
         {
-            UserName = pvlUser.UserName,
-            Email = pvlUser.UserName
+            UserName = tutUser.UserName,
+            Email = tutUser.UserName
         };
-        var result = await userManager.CreateAsync(user, pvlUser.Password);
+        var result = await userManager.CreateAsync(user, tutUser.Password);
         if (result.Succeeded)
         {
             await signInManager.SignInAsync(user, isPersistent: false);
-            return true;
+            response.Success = true;
         }
-        return false;
+        if(result.Errors.Any())
+        {
+            response.Errors = result.Errors.First();
+        }
+        return response;
+    }
+
+    public async Task SignOut()
+    {
+        await signInManager.SignOutAsync();
+    }
+
+    public async Task<ResponseItem<string>> SignIn(TUTUser tutUser)
+    {
+        ResponseItem<string> response = new();
+        IdentityUser user = new()
+        {
+            UserName = tutUser.UserName,
+        };
+        var result = await signInManager.PasswordSignInAsync(user.UserName, tutUser.Password, false, false);
+        if (result.Succeeded)
+        {
+            response.Success = true;
+        }
+        //if (result.)
+        //{
+        //    response.Errors = result.Errors.First();
+        //}
+        return response;
     }
 }

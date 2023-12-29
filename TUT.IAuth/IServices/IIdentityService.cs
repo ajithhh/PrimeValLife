@@ -1,9 +1,10 @@
-﻿using TUT.IAuth.Models;
+﻿namespace TUT.IAuth.IServices;
+using TUT.IAuth.Models;
+using TUT.Utilities.Models;
 
-namespace TUT.IAuth.IServices
+public interface IIdentityService
 {
-    public interface IIdentityService
-    {
-        Task<bool> RegisterUser(PvlUser pvlUser);
-    }
+    Task<ResponseItem<string>> RegisterUser(TUTUser tutUser);
+    Task<ResponseItem<string>> SignIn(TUTUser user);
+    Task SignOut();
 }
