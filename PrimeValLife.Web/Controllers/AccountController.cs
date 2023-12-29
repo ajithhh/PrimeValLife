@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TUT.IAuth.IServices;
 using TUT.IAuth.Models;
+using TUT.Utilities.Models;
 
 public class AccountController(IIdentityService identityService, ILogger<AccountController> logger) : Controller
 {
@@ -14,25 +15,64 @@ public class AccountController(IIdentityService identityService, ILogger<Account
     {
         ClaimsPrincipal currentUser = HttpContext.User;
 
-        if (currentUser.Identity.IsAuthenticated)
+        if (currentUser != null && currentUser.Identity != null && currentUser.Identity.IsAuthenticated)
         {
-            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            string username = currentUser.FindFirst(ClaimTypes.Name)?.Value;
-            string email = currentUser.FindFirst(ClaimTypes.Email)?.Value;
-            return RedirectToAction("Index", "Account");
+            string? userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string? username = currentUser.FindFirst(ClaimTypes.Name)?.Value;
+            string? email = currentUser.FindFirst(ClaimTypes.Email)?.Value;
+            return RedirectToAction("Index", "Home");
         }
         return View();
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Register(PvlUser user)
+    public IActionResult Login()
     {
+        return View();
+    }
+
+    public IActionResult ForgotPassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<ResponseItem<string>> Register([FromBody] TUTUser user)
+    {
+        ResponseItem<string> response = new();
         var result = await _iservice.RegisterUser(user);
-        if (result)
+        if (result.Success)
         {
-            return RedirectToAction("Register", "Account");
+            response.Success = true;
         }
-        return View(result);
+        if (result.Errors != null)
+        {
+            response.Success = false;
+            response.Errors = result.Errors;
+        }
+        return response;
+    }
+
+    [HttpPost]
+    public async Task<ResponseItem<string>> SignIn([FromBody] TUTUser user)
+    {
+        ResponseItem<string> response = new();
+        var result = await _iservice.SignIn(user);
+        if (result.Success)
+        {
+            response.Success = true;
+        }
+        if (result.Errors != null)
+        {
+            response.Success = false;
+            response.Errors = result.Errors;
+        }
+        return response;
+    }
+
+    public async Task<IActionResult> Logout()
+    {
+        await _iservice.SignOut();
+        return RedirectToAction("Index", "Home");
     }
 }
 
