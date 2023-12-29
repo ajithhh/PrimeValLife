@@ -14,13 +14,23 @@ public class AccountController(IIdentityService identityService, ILogger<Account
     {
         ClaimsPrincipal currentUser = HttpContext.User;
 
-        if (currentUser.Identity.IsAuthenticated)
+        if (currentUser != null && currentUser.Identity != null && currentUser.Identity.IsAuthenticated)
         {
-            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            string username = currentUser.FindFirst(ClaimTypes.Name)?.Value;
-            string email = currentUser.FindFirst(ClaimTypes.Email)?.Value;
-            return RedirectToAction("Index", "Account");
+            string? userId = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string? username = currentUser.FindFirst(ClaimTypes.Name)?.Value;
+            string? email = currentUser.FindFirst(ClaimTypes.Email)?.Value;
+            return RedirectToAction("Index", "Home");
         }
+        return View();
+    }
+
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    public IActionResult ForgotPassword()
+    {
         return View();
     }
 
