@@ -2,25 +2,34 @@
 let qtyUp = document.getElementById("qty-up")
 let qtyDown = document.getElementById("qty-down")
 let qtyVal = document.getElementById("qty-val")
-
+let btnAddToCart = document.getElementById("addToCart")
+let btnBuyNow = document.getElementById("buyNow")
+let currentBuyerItems;
 //INITIALIZATION
 function _initialize() {
     qtyVal.innerText=1
 }
 
-function addToCart(event) {
-    if (product) {
-        const newItem = {
-            cartId: cartId,
-            SKU: product.product.SKU,
+function getBuyerItems() {
+    return {
+            cartId:1,
+            SKU: product.product.sku,
             productId: product.product.productId,
-            quantity:parseInt(qtyVal.innerText)
-        };
-
-        //Call API 
-        //updateCartUI();
+            quantity: parseInt(qtyVal.innerText)
     }
 }
+
+function addToCart() {
+    getBuyerItems()
+        //Call API 
+        //updateCartUI();
+    
+}
+
+function buyNow() {
+    requestBuyNow(getBuyerItems());
+}
+
 
 //EVENTLISTENERS
 qtyUp.addEventListener("click", () => {
@@ -42,3 +51,5 @@ qtyDown.addEventListener("click", () => {
         qtyVal.innerText = parsedQty;
     }
 })
+btnBuyNow.addEventListener("click",buyNow)
+btnBuyNow.addEventListener("click",getBuyerItems)

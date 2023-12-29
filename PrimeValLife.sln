@@ -9,9 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimeValLife.Web", "PrimeVa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimeValLife.Core", "PrimeValLife.Core\PrimeValLife.Core.csproj", "{6DD7F36F-21A1-4AEE-BA62-40DBE3494691}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrimeValLife.Admin", "PrimeValLife.Admin\PrimeValLife.Admin.csproj", "{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TUT.Payments.PhonePe", "TUT.Payments.PhonePe\TUT.Payments.PhonePe.csproj", "{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimeValLife.Admin", "PrimeValLife.Admin\PrimeValLife.Admin.csproj", "{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

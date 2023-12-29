@@ -11,8 +11,10 @@ namespace PrimeValLife.Core.Models.Orders
         [Column(TypeName = "decimal(10,6)")]
         public decimal Price { get; set; }
 
-        public Order Order { get; set; }
-        public Product Product { get; set; }
+        [ForeignKey("Order")]
+        public int OrderId { get; set; }
+        [ForeignKey("Product")]
+        public int ProductId { get; set; }
     }
 
 }

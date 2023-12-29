@@ -1,13 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PrimeValLife.Core;
 using PrimeValLife.Core.Models.Products;
+using PrimeValLife.Core.Models.Users;
 using PrimeValLife.Core.Models.Vendors;
 using PrimeValLife.Web.Models;
+using System.Runtime.InteropServices;
 
 namespace PrimeValLife.Web.Controllers.Products
 {
 
     public class ProductsController : Controller
     {
+        private readonly PrimeValLifeDbContext _context;
+        public ProductsController(PrimeValLifeDbContext primeContext)
+        {
+            _context = primeContext;
+        }
         public IActionResult ProductView()
         {
             ProductView productView = new ProductView();
@@ -20,6 +28,9 @@ namespace PrimeValLife.Web.Controllers.Products
                     Name = "TestCategory"
                 }
             });
+            product.SKU = "1010";
+            productView.SKU = product.SKU;
+            product.ProductId = 1;
             productView.Product = product;
             productView.Product.StockQuantity = 5;
             productView.ProductName = "Test Name";//Redundant use product
@@ -100,14 +111,30 @@ namespace PrimeValLife.Web.Controllers.Products
                 },
 
             };
-            productView.ProductVendor = new Vendor() 
-            { Address =new Core.Models.Users.Address() { City = "Chennai",Street= "Main Street",Country="India",State="TN",ZipCode="600032"},
-              LogoUrl = "assets/imgs/vendor/vendor-18.svg" ,
-              VendorName = "Test Vendor",
-              VendorDescription = "Noodles & Company is an American fast-casual restaurant that offers international and American noodle dishes and pasta in addition to soups and salads. Noodles & Company was founded in 1995 by Aaron Kennedy and is headquartered in Broomfield, Colorado. The company went public in 2013 and recorded a $457 million revenue in 2017.In late 2018, there were 460 Noodles & Company locations across 29 states and Washington, D.C."
+            productView.ProductVendor = new Vendor()
+            { Address = new Core.Models.Users.Address() { City = "Chennai", AddressLine1 = "Main Street", Country = "India", State = "TN", ZipCode = "600032" },
+                LogoUrl = "assets/imgs/vendor/vendor-18.svg",
+                VendorName = "Test Vendor",
+                VendorDescription = "Noodles & Company is an American fast-casual restaurant that offers international and American noodle dishes and pasta in addition to soups and salads. Noodles & Company was founded in 1995 by Aaron Kennedy and is headquartered in Broomfield, Colorado. The company went public in 2013 and recorded a $457 million revenue in 2017.In late 2018, there were 460 Noodles & Company locations across 29 states and Washington, D.C."
             };
 
             return View(productView);
+        }
+
+        [Route("api/Products/directCheckOut")]
+        [HttpPost]
+        public async Task<IActionResult> BuyNowCurrentProduct(CartItem cartItem)
+        {
+            _context.CartItems.Add(cartItem);
+            _context.SaveChanges();
+            OrdersCheckOut checkOut = new OrdersCheckOut();
+            checkOut.CartItem = new List<CartItem>();
+            checkOut.CartItem.Add(cartItem);
+            var cart = await _context.Carts.FindAsync(cartItem.CartId);
+            var user = await _context.Users.FindAsync(cart.UserId);
+            checkOut.Cart = cart;
+            checkOut.User = user;
+            return RedirectToAction("CheckOut","Orders",checkOut);
         }
     }
 }

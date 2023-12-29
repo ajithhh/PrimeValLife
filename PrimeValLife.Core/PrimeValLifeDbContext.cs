@@ -17,6 +17,7 @@ namespace PrimeValLife.Core
     {
         public PrimeValLifeDbContext(DbContextOptions<PrimeValLifeDbContext> options) :base(options)
         {
+
         }
 
         public DbSet<Order> Orders { get; set; }

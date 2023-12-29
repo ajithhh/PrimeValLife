@@ -1,0 +1,10 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<script>
+    const baseUrl = '@Configuration["HostConfiguration:APIHost"]'
+    const confirmOrderUrl = "Orders/CreateOrder"
+    const confirmShippingInfoUrl = "Orders/CreateShippingInfo"
+    const directCheckOutUrl = "Products/directCheckOut"
+</script>

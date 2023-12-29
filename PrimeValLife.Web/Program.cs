@@ -17,8 +17,7 @@ builder.Services.AddDbContextPool<PrimeValLifeDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("PrimeValLifeDB"));
 });
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-        .AddEntityFrameworkStores<AppDbContext>();
+
 builder.Services.ResolveDependency(); 
 var app = builder.Build();
 
