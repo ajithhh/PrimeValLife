@@ -16,6 +16,7 @@ public static class ResolveDependencyBuilder
     {        
         services.AddTransient<IAuditRepository,AuditRepository>();
         services.AddTransient<IAuditService, AuditService>();
+        services.AddTransient<IIdentityService, IdentityService>();
         services.AddIdentity<IdentityUser, IdentityRole>()
         .AddEntityFrameworkStores<AppDbContext>();
     }

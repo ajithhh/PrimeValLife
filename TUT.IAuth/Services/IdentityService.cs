@@ -2,6 +2,7 @@
 
 using Azure;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using TUT.IAuth.IServices;
 using TUT.IAuth.Models;
 using TUT.Utilities.Models;
@@ -55,5 +56,10 @@ public class IdentityService(UserManager<IdentityUser> userManager,
         //    response.Errors = result.Errors.First();
         //}
         return response;
+    }
+
+    public bool IsSignedIn(ClaimsPrincipal claims)
+    {
+        return signInManager.IsSignedIn(claims);
     }
 }
