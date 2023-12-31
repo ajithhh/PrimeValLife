@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrimeValLife.Web.Models;
 using System.Diagnostics;
@@ -5,7 +6,7 @@ using System.Security.Claims;
 
 namespace PrimeValLife.Web.Controllers
 {
-   
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
