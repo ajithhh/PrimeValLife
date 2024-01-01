@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrimeValLife.Core.Models.Users
 {
@@ -14,6 +16,10 @@ namespace PrimeValLife.Core.Models.Users
         [DefaultValue("India")]
         public string Country { get; set; }
         public string Phone { get; set; }
+        [ForeignKey("User")]
+        public int UserId {  get; set; }
+        public User User { get; set; }
+
     }
 
 }

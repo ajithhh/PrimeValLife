@@ -46,6 +46,19 @@ namespace PrimeValLife.Core
         {
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ProductCategory>()
+            .HasKey(pc => new { pc.ProductId, pc.CategoryId });
+
+            //modelBuilder.Entity<ProductCategory>()
+            //    .HasOne(pc => pc.Product)
+            //    .WithMany(p => p.ProductCategories)
+            //    .HasForeignKey(pc => pc.ProductId);
+
+            //modelBuilder.Entity<ProductCategory>()
+            //    .HasOne(pc => pc.Category)
+            //    .WithMany(p => p.ProductCategories)
+            //    .HasForeignKey(pc => pc.CategoryId);
+                
         }
     }
 }

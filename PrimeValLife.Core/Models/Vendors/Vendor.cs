@@ -1,4 +1,6 @@
-﻿using PrimeValLife.Core.Models.Users;
+﻿using PrimeValLife.Core.Models.Products;
+using PrimeValLife.Core.Models.Users;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrimeValLife.Core.Models.Vendors
 {
@@ -13,7 +15,9 @@ namespace PrimeValLife.Core.Models.Vendors
         public string LogoUrl { get; set; }
 
         public byte Average { get; set; }
-
-        public Address Address { get; set; }
+        public List<Product> Products { get; set; }
+        [ForeignKey("User")]
+        public int UserId {  get; set; }
+        public User User { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimeValLife.Core;
 
@@ -11,9 +12,11 @@ using PrimeValLife.Core;
 namespace PrimeValLife.Core.Migrations
 {
     [DbContext(typeof(PrimeValLifeDbContext))]
-    partial class PrimeValLifeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231231072629_ProductVendor")]
+    partial class ProductVendor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,9 +290,6 @@ namespace PrimeValLife.Core.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductPrimaryInfoId");
-
-                    b.HasIndex("ProductId")
-                        .IsUnique();
 
                     b.ToTable("ProductPrimaryInfos");
                 });
@@ -640,13 +640,11 @@ namespace PrimeValLife.Core.Migrations
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Products.Product", b =>
                 {
-                    b.HasOne("PrimeValLife.Core.Models.Vendors.Vendor", "Vendor")
+                    b.HasOne("PrimeValLife.Core.Models.Vendors.Vendor", null)
                         .WithMany("Products")
                         .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Vendor");
                 });
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Products.ProductCategory", b =>
@@ -675,17 +673,6 @@ namespace PrimeValLife.Core.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PrimeValLife.Core.Models.Products.ProductPrimaryInfo", b =>
-                {
-                    b.HasOne("PrimeValLife.Core.Models.Products.Product", "Product")
-                        .WithOne("ProductPrimaryInfo")
-                        .HasForeignKey("PrimeValLife.Core.Models.Products.ProductPrimaryInfo", "ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Products.ProductVariation", b =>
@@ -828,9 +815,6 @@ namespace PrimeValLife.Core.Migrations
                     b.Navigation("ProductCategories");
 
                     b.Navigation("ProductInfo");
-
-                    b.Navigation("ProductPrimaryInfo")
-                        .IsRequired();
 
                     b.Navigation("ProductVariations");
                 });

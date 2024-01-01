@@ -4,7 +4,7 @@
         <div class="container">
             <div class="breadcrumb">
                 <a asp-action="Index" asp-controller="Home" rel="nofollow"><i class="fi-rs-home mr-5"></i>Home</a>
-                <span></span> <a href="#CategoryLink">@Model.Product.ProductCategories.First().Category.Name</a> <span></span> @Model.ProductName
+                <span></span> <a href="#CategoryLink">@Model.Product.ProductCategories.First().Category.Name</a> <span></span> @Model.Product.Name
             </div>
         </div>
     </div>
@@ -47,11 +47,11 @@
                                 </div>
                                 <div class="col-md-6 col-sm-12 col-xs-12">
                                     <div class="detail-info pr-30 pl-30">
-                                        @if (!Model.Active)
+                                        @if (!Model.Product.IsOnSale)
                                         {
                                             <span class="stock-status out-stock"> Sale Off </span>
                                         }
-                                        <h2 class="title-detail">@Model.ProductName</h2>
+                                        <h2 class="title-detail">@Model.Product.Name</h2>
                                         @*<div class="product-detail-rating">
                                         <div class="product-rate-cover text-end">
                                         <div class="product-rate d-inline-block">
@@ -62,7 +62,16 @@
                                         </div> *@
                                         <div class="clearfix product-price-cover">
                                             <div class="product-price primary-color float-left">
-                                                <span class="current-price text-brand">&#x20b9;@Model.Product.Price</span>
+                                                <span class="current-price text-brand">&#x20b9;
+                                                    @if (Model.Product.Price % 1 == 0)
+                                                    {
+                                                        @((int)Model.Product.Price)
+                                                    }
+                                                    else
+                                                    {
+                                                        @Model.Product.Price.ToString("0.00")
+                                                    }
+                                                </span>
                                                 <span>
                                                     <span class="save-price font-md color3 ml-15">
                                                         @{
@@ -79,28 +88,37 @@
                                                         }
                                                         % Off
                                                     </span>
-                                                    <span class="old-price font-md ml-15">&#x20b9;@Model.Product.StandardCost</span>
+                                                    <span class="old-price font-md ml-15">&#x20b9;
+                                                        @if (Model.Product.StandardCost % 1 == 0)
+                                                        {
+                                                            @((int)Model.Product.StandardCost)
+                                                        }
+                                                        else
+                                                        {
+                                                            @Model.Product.StandardCost.ToString("0.00")
+                                                        }
+                                                    </span>
                                                 </span>
                                             </div>
                                         </div>
                                         <div class="short-desc mb-30">
                                             <p class="font-lg">
-                                                @Model.ProductDescription
+                                                @Model.Product.Description
                                             </p>
                                         </div>
                                         
                                         <div class="attr-detail attr-size mb-30">
-                                            <strong class="mr-10">@Model.ProductVariation.First().VariationType : </strong>
+                                            <strong class="mr-10">@Model.Product.ProductVariations.First().VariationType : </strong>
                                             <ul class="list-filter size-filter font-small">
-                                                @for (int i = 0; i < Model.ProductVariation.Count; i++)
+                                                @for (int i = 0; i < Model.Product.ProductVariations.Count; i++)
                                                 {
                                                     if (i != 0)
                                                     {
-                                                        <li><a href="#">@Model.ProductVariation[i].VariationValue</a></li>
+                                                        <li><a href="#">@Model.Product.ProductVariations[i].VariationValue</a></li>
                                                     }
                                                     else
                                                     {
-                                                        <li class="active"><a href="#">@Model.ProductVariation[i].VariationValue</a></li>
+                                                        <li class="active"><a href="#">@Model.Product.ProductVariations[i].VariationValue</a></li>
                                                     }
                                                 }
                                             </ul>
@@ -121,13 +139,13 @@
                                         @* Buyer Submission ends *@
                                         <div class="font-xs">
                                             <ul class="mr-50 float-start">
-                                                <li class="mb-5">Type: <span class="text-brand">@Model.PrimaryInfo.ProductType</span></li>
-                                                <li class="mb-5">MFG:<span class="text-brand"> @Model.PrimaryInfo.MFG</span></li>
-                                                <li>LIFE: <span class="text-brand">@Model.PrimaryInfo.Life days</span></li>
-                                                <li class="mb-5">SKU: <a href="#">@Model.SKU</a></li>
+                                                <li class="mb-5">Type: <span class="text-brand">@Model.Product.ProductPrimaryInfo.ProductType</span></li>
+                                                <li class="mb-5">MFG:<span class="text-brand"> @Model.Product.ProductPrimaryInfo.MFG</span></li>
+                                                <li>LIFE: <span class="text-brand">@Model.Product.ProductPrimaryInfo.Life days</span></li>
+                                                <li class="mb-5">SKU: <a href="#">@Model.Product.SKU</a></li>
                                                 <li class="mb-5">
                                                     Tags:
-                                                    @foreach (var tag in Model.PrimaryInfo.Tags)
+                                                    @foreach (var tag in Model.Product.ProductPrimaryInfo.Tags)
                                                     {
                                                         <a href="#" rel="tag">@tag </a>
                                                     }
@@ -158,14 +176,14 @@
                                     <div class="tab-content shop_info_tab entry-main-content">
                                         <div class="tab-pane fade show active" id="Description">
                                             <div class="">
-                                                @Html.Raw(Model.ProductLongDescription)
+                                                @Html.Raw(Model.Product.LongDescription)
                                                 @* Render html description *@
                                             </div>
                                         </div>
                                         <div class="tab-pane fade" id="Additional-info">
                                             <table class="font-md">
                                                 <tbody>
-                                                    @foreach (var productInfo in Model.ProductInfo)
+                                                    @foreach (var productInfo in Model.Product.ProductInfo)
                                                     {
                                                         <tr class="stand-up">
                                                             <th>@productInfo.ProductInfoName</th>
@@ -179,10 +197,10 @@
                                         </div>
                                         <div class="tab-pane fade" id="Vendor-info">
                                             <div class="vendor-logo d-flex mb-30">
-                                                <img src="@Model.ProductVendor.LogoUrl" alt="" />
+                                                <img src="@Model.Product.Vendor.LogoUrl" alt="" />
                                                 <div class="vendor-name ml-15">
                                                     <h6>
-                                                        <a href="vendor-details-2.html">@Model.ProductVendor.VendorName</a>
+                                                        <a href="vendor-details-2.html">@Model.Product.Vendor.VendorName</a>
                                                     </h6>
                                                     @* <div class="product-rate-cover text-end">
                                                     <div class="product-rate d-inline-block">
@@ -193,8 +211,8 @@
                                                 </div>
                                             </div>
                                             <ul class="contact-infor mb-50">
-                                                <li><img src="assets/imgs/theme/icons/icon-location.svg" alt="" /><strong>Address: </strong> <span>@Model.ProductVendor.Address.AddressLine1 ,@Model.ProductVendor.Address.City ,@Model.ProductVendor.Address.State ,@Model.ProductVendor.Address.ZipCode </span></li>
-                                                <li><img src="assets/imgs/theme/icons/icon-contact.svg" alt="" /><strong>Contact Seller:</strong><span>(+91) @Model.ProductVendor.Address.Phone</span></li>
+                                                <li><img src="assets/imgs/theme/icons/icon-location.svg" alt="" /><strong>Address: </strong> <span>@Model.Product.Vendor.User.Address.First().AddressLine1 ,@Model.Product.Vendor.User.Address.First().City ,@Model.Product.Vendor.User.Address.First().State ,@Model.Product.Vendor.User.Address.First().ZipCode </span></li>
+                                                <li><img src="assets/imgs/theme/icons/icon-contact.svg" alt="" /><strong>Contact Seller:</strong><span>(+91) @Model.Product.Vendor.User.Address.First().Phone</span></li>
                                             </ul>
                                             <div class="d-flex mb-55">
                                                 @*       <div class="mr-30">
@@ -211,7 +229,7 @@
                                                 </div>
                                                 </div> *@
                                                 <p>
-                                                    @Model.ProductVendor.VendorDescription
+                                                    @Model.Product.Vendor.VendorDescription
                                                 </p>
                                             </div>
                                         </div>

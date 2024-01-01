@@ -3,11 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using TUT.IAuth;
 using PrimeValLife.Core.Infrastructure;
 using PrimeValLife.Core;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+    // Other JSON serialization options...
+});
 
 builder.Services.AddDbContextPool<AppDbContext>(options =>
 {

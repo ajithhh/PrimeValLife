@@ -11,11 +11,9 @@ function _initialize() {
 }
 
 function getBuyerItems() {
-    return {
-            cartId:1,
-            SKU: product.product.sku,
-            productId: product.product.productId,
-            quantity: parseInt(qtyVal.innerText)
+    return {    
+            Product: product.product,
+            Quantity: parseInt(qtyVal.innerText)
     }
 }
 

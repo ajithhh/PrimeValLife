@@ -5,6 +5,7 @@ namespace PrimeValLife.Core.Models.Products
     public class ProductPrimaryInfo
     {
         public int ProductPrimaryInfoId { get; set; }
+
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
@@ -15,5 +16,10 @@ namespace PrimeValLife.Core.Models.Products
         public int Life {  get; set; } // in days
 
         public List<string> Tags { get; set; }
+        public string ProductDescription { get; set; }
+
+        public string ProductLongDescription { get; set; }
+
+        public Product Product { get; set; }
     }
 }
