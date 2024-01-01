@@ -1,14 +1,21 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TUT.IAuth;
 using PrimeValLife.Core.Infrastructure;
 using PrimeValLife.Core;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+builder.Services.AddControllersWithViews(options =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
+}).AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     // Other JSON serialization options...
@@ -23,7 +30,7 @@ builder.Services.AddDbContextPool<PrimeValLifeDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PrimeValLifeDB"));
 });
 
-builder.Services.ResolveDependency(); 
+builder.Services.ResolveDependency();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

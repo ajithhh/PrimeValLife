@@ -1,11 +1,13 @@
 namespace PrimeValLife.Web.Controllers;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TUT.IAuth.IServices;
 using TUT.IAuth.Models;
 using TUT.Utilities.Models;
 
+[AllowAnonymous]
 public class AccountController(IIdentityService identityService, ILogger<AccountController> logger) : Controller
 {
     private readonly ILogger<AccountController> _logger = logger;
@@ -25,9 +27,16 @@ public class AccountController(IIdentityService identityService, ILogger<Account
         return View();
     }
 
-    public IActionResult Login()
+    public IActionResult Login(string returnUrl)
     {
-        return View();
+        if (Url.IsLocalUrl(returnUrl))
+        {
+            return Redirect(returnUrl);
+        }
+        else
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     public IActionResult ForgotPassword()
