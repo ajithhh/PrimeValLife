@@ -5,7 +5,7 @@
 namespace PrimeValLife.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class Cart : Migration
+    public partial class AddToCartAndTempCart : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -15,7 +15,7 @@ namespace PrimeValLife.Core.Models.Vendors
         public string LogoUrl { get; set; }
 
         public byte Average { get; set; }
-        public List<Product> Products { get; set; }
+        public List<Product> Products { get; set; } = new List<Product>();
         [ForeignKey("User")]
         public int UserId {  get; set; }
         public User User { get; set; }

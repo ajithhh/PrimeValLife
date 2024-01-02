@@ -7,6 +7,7 @@ namespace PrimeValLife.Core.Models.Products
         public int ProductInfoId {  get; set; }
         [ForeignKey("Product")]
         public int ProductId { get; set; }
+        public Product Product { get; set; }
         public string ProductInfoName { get; set; }
         public string ProductInfoValue { get; set; }
 

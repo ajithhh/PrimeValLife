@@ -7,9 +7,9 @@ namespace PrimeValLife.Core.Models.Products
         public int ProductVariationId { get; set; }
         [ForeignKey("Product")]
         public int ProductId { get; set; }
+        public Product Product { get; set; }
         public string VariationType {  get; set; }
         public string VariationValue { get; set; }
-
 
     }
 

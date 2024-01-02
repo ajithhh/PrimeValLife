@@ -12,8 +12,8 @@ using PrimeValLife.Core;
 namespace PrimeValLife.Core.Migrations
 {
     [DbContext(typeof(PrimeValLifeDbContext))]
-    [Migration("20231231064509_ProductInfo")]
-    partial class ProductInfo
+    [Migration("20240101162856_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,6 +51,8 @@ namespace PrimeValLife.Core.Migrations
 
                     b.HasKey("OrderId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Orders");
                 });
 
@@ -76,6 +78,10 @@ namespace PrimeValLife.Core.Migrations
 
                     b.HasKey("OrderItemId");
 
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
                     b.ToTable("OrderItems");
                 });
 
@@ -91,6 +97,9 @@ namespace PrimeValLife.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -99,6 +108,8 @@ namespace PrimeValLife.Core.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("OrderTrackingId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderTracking");
                 });
@@ -161,6 +172,13 @@ namespace PrimeValLife.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsOnSale")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LongDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -178,7 +196,12 @@ namespace PrimeValLife.Core.Migrations
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("VendorId")
+                        .HasColumnType("int");
+
                     b.HasKey("ProductId");
+
+                    b.HasIndex("VendorId");
 
                     b.ToTable("Products");
                 });
@@ -247,19 +270,13 @@ namespace PrimeValLife.Core.Migrations
             modelBuilder.Entity("PrimeValLife.Core.Models.Products.ProductPrimaryInfo", b =>
                 {
                     b.Property<int>("ProductPrimaryInfoId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductPrimaryInfoId"));
 
                     b.Property<int>("Life")
                         .HasColumnType("int");
 
                     b.Property<DateOnly>("MFG")
                         .HasColumnType("date");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ProductType")
                         .IsRequired()
@@ -491,6 +508,7 @@ namespace PrimeValLife.Core.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserIdentityId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Username")
@@ -593,15 +611,15 @@ namespace PrimeValLife.Core.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VendorId"));
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<byte>("Average")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("LogoUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("VendorDescription")
                         .IsRequired()
@@ -613,9 +631,61 @@ namespace PrimeValLife.Core.Migrations
 
                     b.HasKey("VendorId");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Vendors");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Orders.Order", b =>
+                {
+                    b.HasOne("PrimeValLife.Core.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Orders.OrderItem", b =>
+                {
+                    b.HasOne("PrimeValLife.Core.Models.Orders.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrimeValLife.Core.Models.Products.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Orders.OrderTracking", b =>
+                {
+                    b.HasOne("PrimeValLife.Core.Models.Orders.Order", "Order")
+                        .WithMany("OrderTrackings")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Products.Product", b =>
+                {
+                    b.HasOne("PrimeValLife.Core.Models.Vendors.Vendor", "Vendor")
+                        .WithMany("Products")
+                        .HasForeignKey("VendorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vendor");
                 });
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Products.ProductCategory", b =>
@@ -639,26 +709,41 @@ namespace PrimeValLife.Core.Migrations
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Products.ProductInfo", b =>
                 {
-                    b.HasOne("PrimeValLife.Core.Models.Products.Product", null)
+                    b.HasOne("PrimeValLife.Core.Models.Products.Product", "Product")
                         .WithMany("ProductInfo")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Products.ProductPrimaryInfo", b =>
+                {
+                    b.HasOne("PrimeValLife.Core.Models.Products.Product", "Product")
+                        .WithOne("ProductPrimaryInfo")
+                        .HasForeignKey("PrimeValLife.Core.Models.Products.ProductPrimaryInfo", "ProductPrimaryInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Products.ProductVariation", b =>
                 {
-                    b.HasOne("PrimeValLife.Core.Models.Products.Product", null)
+                    b.HasOne("PrimeValLife.Core.Models.Products.Product", "Product")
                         .WithMany("ProductVariations")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Users.Address", b =>
                 {
                     b.HasOne("PrimeValLife.Core.Models.Users.User", "User")
-                        .WithMany()
+                        .WithMany("Address")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -680,7 +765,7 @@ namespace PrimeValLife.Core.Migrations
             modelBuilder.Entity("PrimeValLife.Core.Models.Users.CartItem", b =>
                 {
                     b.HasOne("PrimeValLife.Core.Models.Users.Cart", "Cart")
-                        .WithMany()
+                        .WithMany("CartItems")
                         .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -700,7 +785,9 @@ namespace PrimeValLife.Core.Migrations
                 {
                     b.HasOne("PrimeValLife.Core.Models.Users.AspNetUsers", "UserIdentity")
                         .WithMany()
-                        .HasForeignKey("UserIdentityId");
+                        .HasForeignKey("UserIdentityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UserIdentity");
                 });
@@ -767,13 +854,20 @@ namespace PrimeValLife.Core.Migrations
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Vendors.Vendor", b =>
                 {
-                    b.HasOne("PrimeValLife.Core.Models.Users.Address", "Address")
+                    b.HasOne("PrimeValLife.Core.Models.Users.User", "User")
                         .WithMany()
-                        .HasForeignKey("AddressId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Address");
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Orders.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+
+                    b.Navigation("OrderTrackings");
                 });
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Products.Category", b =>
@@ -787,12 +881,30 @@ namespace PrimeValLife.Core.Migrations
 
                     b.Navigation("ProductInfo");
 
+                    b.Navigation("ProductPrimaryInfo")
+                        .IsRequired();
+
                     b.Navigation("ProductVariations");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Users.Cart", b =>
+                {
+                    b.Navigation("CartItems");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Users.User", b =>
+                {
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("PrimeValLife.Core.Models.Users.Wishlist", b =>
                 {
                     b.Navigation("WishlistItems");
+                });
+
+            modelBuilder.Entity("PrimeValLife.Core.Models.Vendors.Vendor", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

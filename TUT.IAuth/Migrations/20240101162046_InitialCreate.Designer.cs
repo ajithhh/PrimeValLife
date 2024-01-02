@@ -12,8 +12,8 @@ using TUT.IAuth;
 namespace TUT.IAuth.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231223172946_AddingIdentity")]
-    partial class AddingIdentity
+    [Migration("20240101162046_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
