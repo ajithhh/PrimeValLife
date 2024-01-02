@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol;
 using PrimeValLife.Core;
 using PrimeValLife.Core.Models.Orders;
 using PrimeValLife.Core.Models.Users;
@@ -101,7 +100,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
         }
 
         [HttpPost("AddToCart")]
-        public async Task<ObjectResult> AddToCart([FromBody]AddToCartRequest request)
+        public async Task<ResponseItem<AddToCartResponse>> AddToCart ([FromBody]AddToCartRequest request)
         {
             ResponseItem<AddToCartResponse> response = null;
             //Check For Authorized User
@@ -146,7 +145,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             {
                 response = new ResponseItem<AddToCartResponse>() { Data = new AddToCartResponse() { CartItemId = -1 }, Success = false,Errors=ex,Message="Unable to add to cart" };
             }
-            return Ok(response);
+            return response;
         }
 
 

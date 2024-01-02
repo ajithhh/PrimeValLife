@@ -13,7 +13,6 @@
                 alert("Order Creation failed")
             }
         });
-
 }
 function requestAddToCart(data) {
     fetch(addToCartUrl, {
@@ -24,11 +23,14 @@ function requestAddToCart(data) {
         body: JSON.stringify(data)
     }).then(function (response) {
         // Handle response you get from the API
-        if (response.body.success) {
+        if (response.ok) {
+            return response.json()
+        }
+    }).then(data => {
+            if (data.success) { 
             alert("Item added to cart")
         } else {
             alert("Error Occurred")
         }
-    });
-
+        });  
 }
