@@ -13,7 +13,7 @@ namespace PrimeValLife.Web.Controllers.Orders
         {
             _context = context;
         }
-        public IActionResult CheckOut([FromQuery] bool directCheckOut=false)
+        public IActionResult OrdersCheckOut()
         {   
             return View();
         }

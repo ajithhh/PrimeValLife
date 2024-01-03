@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimeValLife.Core;
 using PrimeValLife.Core.Models.Orders;
 using PrimeValLife.Core.Models.Users;
@@ -8,6 +9,7 @@ using TUT.Utilities.Models;
 
 namespace PrimeValLife.Web.API.Orders.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersApiController : ControllerBase
@@ -102,50 +104,92 @@ namespace PrimeValLife.Web.API.Orders.Controllers
         [HttpPost("AddToCart")]
         public async Task<ResponseItem<AddToCartResponse>> AddToCart ([FromBody]AddToCartRequest request)
         {
-            ResponseItem<AddToCartResponse> response = null;
+            ResponseItem<AddToCartResponse> response;
             //Check For Authorized User
-            User user;
-            Cart cart;
-            CartItem item = new CartItem() { ProductId = request.ProductId, Quantity = request.Quantity };
+            
             var userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (HttpContext.User.Identity.IsAuthenticated)
+            if (HttpContext.User.Identity!.IsAuthenticated)
             {
-                //Authorized User
+                User user;
+                Cart cart;
+                CartItem item = new CartItem() { ProductId = request.ProductId, Quantity = request.Quantity };
+                //Authenticated User
                 user  = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
                 cart = _context.Carts.FirstOrDefault(c => c.UserId == user.UserId)!;
                 if (cart == null)
                 {
                     cart = new Cart() { UserId = user.UserId, CartItems = new List<CartItem>() };
                     _context.Carts.Add(cart);
-                    _context.SaveChanges();
+                   await _context.SaveChangesAsync();
                 }
-                item = _context.CartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId)!;
+                item = _context.CartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId && ci.CartId ==cart.CartId)!;
                 if(item!=null)
                 {
                    item.Quantity=+request.Quantity;
                 }
                 else
                 {
-                    cart.CartItems.Add(item);
-                    _context.Carts.Add(cart);
+                    cart.CartItems.Add(item!);
                 }
-                
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    response = new ResponseItem<AddToCartResponse>() { Data = new AddToCartResponse() { CartItemId = item!.CartItemId }, Success = item.CartItemId > 0 };
+                }
+                catch (Exception ex)
+                {
+                    response = new ResponseItem<AddToCartResponse>() { Data = new AddToCartResponse() { CartItemId = -1 }, Success = false, Errors = ex, Message = "Unable to add to cart" };
+                }
             }
             else
             {
-                //UnAuthorized User
-
-            }
-            try
-            {
-                _context.SaveChanges();
-                response = new ResponseItem<AddToCartResponse>() { Data = new AddToCartResponse() { CartItemId = item.CartItemId }, Success = item.CartItemId > 0 };
-            }
-            catch (Exception ex)
-            {
-                response = new ResponseItem<AddToCartResponse>() { Data = new AddToCartResponse() { CartItemId = -1 }, Success = false,Errors=ex,Message="Unable to add to cart" };
+                // Anonymous User
+                TempCart tempCart;
+                TempCartItem temCartitem = new TempCartItem() { ProductId = request.ProductId, Quantity = request.Quantity };
+                List<TempCartItem> tempCartItems = new List<TempCartItem>();                
+                string anonymousUserId;
+                if (HttpContext.Request.Cookies["GuestId"] ==null)
+                {
+                    anonymousUserId = new Guid().ToString();
+                    HttpContext.Response.Cookies.Append("GuestId", anonymousUserId, new CookieOptions
+                    {
+                        // Additional cookie options can go here
+                        Expires = DateTimeOffset.Now.AddDays(7), // Cookie expiration time
+                        HttpOnly = false, // Whether the cookie is accessible through JavaScript
+                        Secure = true, // Whether the cookie is sent only over HTTPS
+                        SameSite = SameSiteMode.Strict, // Set the SameSite attribute
+                    });
+                    tempCartItems.Add(temCartitem);
+                     tempCart = new TempCart() { SessionId = anonymousUserId, TempCartItems = tempCartItems };
+                    _context.TempCarts.Add(tempCart);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    anonymousUserId = HttpContext.Request.Cookies["GuestId"]!;
+                    tempCart = _context.TempCarts.FirstOrDefault(tc => tc.SessionId == anonymousUserId)!;
+                     temCartitem = _context.TempCartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId && tempCart.TempCartId==ci.TempCartId)!;
+                    if (temCartitem != null)
+                    {
+                        temCartitem.Quantity = +request.Quantity;
+                    }
+                    else
+                    {
+                        tempCart.TempCartItems.Add(temCartitem!);
+                    } 
+                }
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    response = new ResponseItem<AddToCartResponse>() { Data = new AddToCartResponse() { CartItemId = temCartitem!.TempCartItemId }, Success = temCartitem.TempCartItemId > 0 };
+                }
+                catch (Exception ex)
+                {
+                    response = new ResponseItem<AddToCartResponse>() { Data = new AddToCartResponse() { CartItemId = -1 }, Success = false, Errors = ex, Message = "Unable to add to cart" };
+                }
             }
             return response;
+                       
         }
 
 

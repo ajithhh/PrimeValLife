@@ -41,5 +41,5 @@ qtyDown.addEventListener("click", () => {
         qtyVal.innerText = parsedQty;
     }
 })
-btnBuyNow.addEventListener("click",buyNow)
+btnBuyNow.addEventListener("click", addToCart)
 btnAddToCart.addEventListener("click",addToCart)

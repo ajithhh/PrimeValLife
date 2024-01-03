@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PrimeValLife.Core;
@@ -14,6 +15,7 @@ using System.Text.Json.Serialization;
 namespace PrimeValLife.Web.Controllers.Products
 {
 
+    [AllowAnonymous]
     public class ProductsController : Controller
     {
         private readonly PrimeValLifeDbContext _context;

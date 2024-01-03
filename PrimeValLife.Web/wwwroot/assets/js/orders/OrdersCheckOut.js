@@ -33,7 +33,7 @@ function placeOrder() {
     primeOrderRequest(getActiveCheckOut());
 }
 
-function getActiveCheckOut{
+function getActiveCheckOut(){
     return {
         UserId = 1,
         ProductId =Checkout.ProductId,
