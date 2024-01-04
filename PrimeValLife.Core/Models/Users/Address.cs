@@ -12,6 +12,7 @@ namespace PrimeValLife.Core.Models.Users
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
+        public AddressType AddressType { get; set; }
 
         [DefaultValue("India")]
         public string Country { get; set; }

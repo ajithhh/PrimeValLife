@@ -7,7 +7,8 @@ namespace PrimeValLife.Web.Models.Orders
     {
         public Cart Cart { get; set; }
         public User User { get; set; }
-        public Address PrimaryAddress { get; set; }
+        public Address BillingAddress { get; set; }
+        public Address ShippingAddress { get; set; }
         public decimal ShippingCharge {  get; set; }
         public List<CartProducts> CartProducts {  get; set; }
 

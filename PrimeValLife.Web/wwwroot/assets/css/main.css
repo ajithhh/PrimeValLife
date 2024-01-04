@@ -1789,6 +1789,7 @@ input.qty-val {
   border-radius: 0;
   height: unset;
   padding: 0 !important;
+  margin-right:30px;
 }
 
 /*COMPONENTS -> SLIDER*/
@@ -5503,7 +5504,7 @@ table .product-thumbnail img {
 }
 
 .shopping-summery table > :not(caption) > * > * {
-  padding: 15px 0;
+  padding: 15px;
 }
 
 .shopping-summery table td, .shopping-summery table th, .shopping-summery table thead {
