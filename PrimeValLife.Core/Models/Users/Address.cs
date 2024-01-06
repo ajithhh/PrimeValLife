@@ -7,6 +7,8 @@ namespace PrimeValLife.Core.Models.Users
     public class Address
     {
         public int AddressId { get; set; }
+        public string FName {  get; set; }
+        public string LName { get; set; }
         public string AddressLine1 {  get; set; }
         public string AddressLine2 { get; set; }
         public string City { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrimeValLife.Core;
 
@@ -11,9 +12,11 @@ using PrimeValLife.Core;
 namespace PrimeValLife.Core.Migrations
 {
     [DbContext(typeof(PrimeValLifeDbContext))]
-    partial class PrimeValLifeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240106180020_null_name")]
+    partial class null_name
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

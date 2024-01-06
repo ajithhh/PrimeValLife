@@ -1,9 +1,9 @@
 ﻿@model PrimeValLife.Core.Models.Users.CartItem;
 
 <tr class="pt-30 cartProduct">
-    <td class="custome-checkbox pl-30">
+    <td class="pl-30">
         <input value="@Model.Product.ProductId" id="productId" type="hidden" />
-        <input class="form-check-input" type="checkbox" name="checkbox" id="productCheckbox" value="">
+        <input class="form-check-input" type="checkbox" name="checkbox" id="productCheckbox" checked>
         <label class="form-check-label" for="exampleCheckbox1"></label>
     </td>
     <td class="image product-thumbnail pt-40"><img src="@Model.Product.PrimaryImageUrl" alt="#"></td>

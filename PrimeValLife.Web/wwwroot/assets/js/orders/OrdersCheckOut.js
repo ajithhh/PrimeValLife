@@ -1,4 +1,4 @@
-﻿const billingfname = document.getElementById("billingFaNme")
+﻿const billingfname = document.getElementById("billingFName")
 const billinglname = document.getElementById("billingLName")
 const shippingfname = document.getElementById("shippingFName")
 const shippinglname = document.getElementById("shippingLName")
@@ -84,13 +84,12 @@ function placeOrder(e) {
 }
 
 function currentCartDetails() {
-    let cartProducts;
-    
+    let cartProducts = [];
     cartElements.forEach((element) => {
         if (element.querySelector("#productCheckbox:checked")) {
             let cartProduct = {
-                productId: element.querySelector("#productId").value,
-                quantity: element.querySelector("#quantity").value
+                ProductId: element.querySelector("#productId").value,
+                Quantity: element.querySelector("#quantity").value
             }
             cartProducts.push(cartProduct)
         }
@@ -104,10 +103,14 @@ function getCheckOutDetailsFromUser() {
     let createNewAccount = document.querySelector("input[id='createaccount']").checked
     let differentShippingAddress = document.querySelector("input[id='differentaddress']").checked
     let passwordAttached = document.querySelector("input[id='passwordAttached']").value
+    let emailAttached = document.querySelector("input[id='emailAttached']").value
     var billingAddressDetails = {
         AddressLine1: billingAddress.value,
-        AddressLine2: billingAddress2.value,    
+        AddressLine2: billingAddress2.value,
+        FName: billingfname.value,
+        LName: billinglname.value,
         City: billingCity.value,
+        Phone:billingPhone.value,
         /*State: billingState.value,*/
         ZipCode: billingPostCode.value,
     };
@@ -118,26 +121,29 @@ function getCheckOutDetailsFromUser() {
             ShippingAddress: {
                 AddressLine1: shippingAddress.value,
                 AddressLine2: shippingAddress2.value,
+                FName: shippingfname.value,
+                LName: shippinglname.value,
                 City: shippingCity.value,
+                Phone: shippingPhone.value,
                 /*State: shippingState.value,*/
-                ZipCode: shippingPostCode.value,
-                currentCartDetails: currentCartDetails(),
-                createNewAccount: createNewAccount,
-                passwordAttached: passwordAttached
-            }
+                ZipCode: shippingPostCode.value
+            },
+            CartProducts: currentCartDetails(),
+            PaymentMethod: paymentMethod,
+            CreateNewAccount: createNewAccount,
+            PasswordAttached: passwordAttached,
+            EmailAttached: emailAttached
+            
         };
     } else {
         return {
             BillingAddress: billingAddressDetails,
             ShippingAddress: billingAddressDetails,
-            currentCartDetails: currentCartDetails(),
-            paymentMethod: paymentMethod,
-            billingfname: billingfname,
-            billinglname: billinglname,
-            shippingfname: billingfname,
-            shippinglname: billinglname,
-            createNewAccount: createNewAccount,
-            passwordAttached: passwordAttached
+            CartProducts: currentCartDetails(),
+            PaymentMethod: paymentMethod,
+            CreateNewAccount: createNewAccount,
+            PasswordAttached: passwordAttached,
+            EmailAttached: emailAttached
         };
     }
 }

@@ -23,8 +23,9 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             _context = context;
         }
 
-        [HttpPost("CreateOrder")]
-        public async Task<ResponseItem<CreateOrderResponse>> CreateOrder([FromBody] CreateOrderRequest request)
+        [HttpPost]
+        [Route("CreateOrder")]
+        public async Task<ResponseItem<CreateOrderResponse>> CreateOrder([FromBody]CreateOrderRequest request)
         {
             Order order = new Order();
             User user;
@@ -38,11 +39,15 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 var _iservice = HttpContext.RequestServices.GetService<IIdentityService>();
                 var _ilogger = HttpContext.RequestServices.GetService<ILogger<AccountController>>();
                 AccountController accountController = new AccountController(_iservice, _ilogger);
-                TUTUser TUTuser = new TUTUser() { UserName = request.Billingfname + ' ' + request.Billinglname, Password = request.PasswordAttached };
+                TUTUser TUTuser = new TUTUser() { UserName = request.EmailAttached, Password = request.PasswordAttached };
+
                 var accountResult = await accountController.Register(TUTuser);
                 if (accountResult.Success)
                 {
                     userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    user =new User() { Email = request.EmailAttached ,Username=request.EmailAttached!,Password=request.PasswordAttached!,UserIdentityId=userIdentityId!};
+                    _context.Users.Add(user);
+                    _context.SaveChanges();
                 }
                 else
                 {
@@ -55,7 +60,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             {
                 orderItems.Add(new OrderItem() { ProductId = item.ProductId, Quantity = item.Quantity, Price = _context.Products.First(p => p.ProductId == item.ProductId).Price * item.Quantity });
             }
-            order.OrderDate = request.RequestTime;
+            order.OrderDate = DateTime.Now;
             user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
             order.UserId = user.UserId;
             order.OrderItems = orderItems;

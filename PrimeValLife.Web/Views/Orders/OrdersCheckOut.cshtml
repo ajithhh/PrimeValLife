@@ -42,22 +42,22 @@
                     }
                 </div>
                 <div class="">
-                    <div class="row border p-md-4 cart-totals    ml-30 ">
+                    <div class="row border p-md-4 cart-totals ml-30 ">
                     <div class="payment ml-30 col-md-4">
                         <h4 class="mb-30">Payment</h4>
                         <div class="payment_option">
                             <div class="custome-radio">
-                                <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios3" value="netBanking" checked="">
+                                <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios3" value="PREPAID" checked="">
                                 <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Direct Bank Transfer</label>
                             </div>
                             <div class="custome-radio">
                                 <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" value="COD" checked>
                                 <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#checkPayment" aria-controls="checkPayment">Cash on delivery</label>
                             </div>
-                            <div class="custome-radio">
+                            @* <div class="custome-radio">
                                 <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" value="paymentGateway1" checked="">
                                 <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Online Getway</label>
-                            </div>
+                            </div> *@
                         </div>
                         <div class="payment-logo d-flex">
                             <img class="mr-15" src="assets/imgs/theme/icons/payment-paypal.svg" alt="">
@@ -179,9 +179,14 @@
                         <div id="collapsePassword" class="form-group create-account">
                             <div class="row">
                                 <div class="col-lg-6">
-                                        <input required type="password" id="passwordAttached" placeholder="Password" name="password">
+                                        <input required type="text" id="emailAttached" placeholder="email/username" name="email">
                                 </div>
                             </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <input required type="password" id="passwordAttached" placeholder="Password" name="password">
+                                    </div>
+                                </div>
                         </div>
                         }
                         <div class="ship_detail">
