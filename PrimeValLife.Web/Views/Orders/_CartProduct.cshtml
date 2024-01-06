@@ -1,15 +1,14 @@
-﻿
-@model PrimeValLife.Web.Models.Products.CartProducts;
+﻿@model PrimeValLife.Core.Models.Users.CartItem;
 
-<input value="@Model.ProrductId" id="productId" type="hidden" />
-<tr class="pt-30" id="cartProduct">
+<tr class="pt-30 cartProduct">
     <td class="custome-checkbox pl-30">
-        <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
+        <input value="@Model.Product.ProductId" id="productId" type="hidden" />
+        <input class="form-check-input" type="checkbox" name="checkbox" id="productCheckbox" value="">
         <label class="form-check-label" for="exampleCheckbox1"></label>
     </td>
-    <td class="image product-thumbnail pt-40"><img src="@Model.ProductImgUrl" alt="#"></td>
+    <td class="image product-thumbnail pt-40"><img src="@Model.Product.PrimaryImageUrl" alt="#"></td>
     <td class="product-des product-name">
-        <h6 class="mb-5"><a class="product-name mb-10 text-heading" href="shop-product-right.html">@Model.ProductName</a></h6>
+        <h6 class="mb-5"><a class="product-name mb-10 text-heading" href="shop-product-right.html">@Model.Product.Name</a></h6>
         @* <div class="product-rate-cover">
             <div class="product-rate d-inline-block">
                 <div class="product-rating" style="width:90%">
@@ -17,22 +16,25 @@
             </div>
             <span class="font-small ml-5 text-muted"> (4.0)</span>
         </div> *@
-        @Model.ProductDescription
+        @Model.Product.Description
     </td>
     <td class="price" data-title="Price">
-        <h4 id="unitPrice" class="text-body">&#x20b9;@Model.ProductPrice </h4>
+        <h4 id="unitPrice" class="text-body currency">@string.Format("{0:F2}", Model.Product.Price) </h4>
     </td>
     <td class="text-center detail-info" data-title="Stock">
         <div class="detail-extralink mr-15">
             <div class="detail-qty border radius">
                 <a href="#" id="qty-down" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                <input type="text" id="quantity" name="quantity" class="qty-val" value="@Model.CartProductQuantity" min="1">
+                <input type="text" id="quantity" name="quantity" class="qty-val" value="@Model.Quantity" min="1">
                 <a href="#" id="qty-up" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
             </div>
         </div>
     </td>
     <td class="price" data-title="Price">
-        <h4 id="totalPrice" class="text-brand">&#x20b9; </h4>
+        
+        <h4 id="totalPrice" class="text-brand currency">
+            @string.Format("{0:F2}", Model.Product.Price * Model.Quantity)
+        </h4>
     </td>
     <td class="action text-center" data-title="Remove"><a href="#" id="removeFromCart" class="text-body"><i class="fi-rs-trash"></i></a></td>
 </tr>

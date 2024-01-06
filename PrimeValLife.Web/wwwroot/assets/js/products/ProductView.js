@@ -22,9 +22,9 @@ function addToCart() {
 
 
 //EVENTLISTENERS
-qtyUp.addEventListener("click", () => {
+qtyUp.addEventListener("click", (e) => {
+    e.preventDefault()
     var parsedQty = parseInt(qtyVal.innerText);
-
     if ((parsedQty + 1) <= product.product.stockQuantity) {
         qtyVal.innerText = parsedQty + 1;
     } else {
@@ -32,9 +32,9 @@ qtyUp.addEventListener("click", () => {
         ShowToaster("Maximum quantity limit reached", "error");
     }
 })
-qtyDown.addEventListener("click", () => {
+qtyDown.addEventListener("click", (e) => {
+    e.preventDefault()
     var parsedQty = parseInt(qtyVal.innerText);
-
     if ((parsedQty - 1) >= 1) {
         qtyVal.innerText = parsedQty - 1;
     } else {
@@ -42,4 +42,7 @@ qtyDown.addEventListener("click", () => {
     }
 })
 btnBuyNow.addEventListener("click", addToCart)
+btnBuyNow.addEventListener("click", (e) => {
+    window.location.href="orders/orderscheckout"
+})
 btnAddToCart.addEventListener("click",addToCart)

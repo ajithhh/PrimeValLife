@@ -1,6 +1,6 @@
 ﻿using PrimeValLife.Core.Models.Others;
 using PrimeValLife.Core.Models.Users;
-using PrimeValLife.Web.API.Common;
+using PrimeValLife.Web.API.Orders.Models.Common;
 
 namespace PrimeValLife.Web.API.Orders.Models
 {

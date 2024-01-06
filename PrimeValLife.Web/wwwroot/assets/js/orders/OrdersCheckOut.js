@@ -1,4 +1,8 @@
-﻿const billingAddress = document.getElementById("billingAddress")
+﻿const billingfname = document.getElementById("billingFaNme")
+const billinglname = document.getElementById("billingLName")
+const shippingfname = document.getElementById("shippingFName")
+const shippinglname = document.getElementById("shippingLName")
+const billingAddress = document.getElementById("billingAddress")
 const billingAddress2 = document.getElementById("billingAddress2")
 const billingState = document.getElementById("billingState")
 const billingCity = document.getElementById("billingCity")
@@ -11,8 +15,10 @@ const shippingCity = document.getElementById("shippingCity")
 const shippingPostCode = document.getElementById("shippingPostCode")
 const shippingPhone = document.getElementById("shippingPhone")
 const paymentMethod = document.querySelector('input[name="payment_option"]:checked')
-const btnPlaceOrder = document.getElementById("placeOrder")
-
+const btnPlaceOrder = document.getElementById("btnPlaceOrder")
+let cartElements = document.querySelectorAll(".cartProduct");
+let qtyUps = document.querySelectorAll("#qty-up")
+let qtyDowns = document.querySelectorAll("#qty-down")
 //EVENTLISTENER
 document.addEventListener("load", () => {
     if (address) {
@@ -20,50 +26,89 @@ document.addEventListener("load", () => {
     }
 })
 btnPlaceOrder.addEventListener("click", placeOrder)
+cartElements.forEach((ele) => {
+    ele.querySelector("#qty-up").addEventListener("click", (e) => {
+        e.preventDefault()
+        
+            ele.querySelector("#quantity").value =Math.min(parseInt(ele.querySelector("#quantity").value)+1,10)
+        ele.querySelector("#totalPrice").innerText = (parseFloat(ele.querySelector("#unitPrice").innerText) * parseFloat(ele.querySelector("#quantity").value)).toFixed(2)
+    })
+    ele.querySelector("#qty-down").addEventListener("click", (e) => {
+        e.preventDefault()
+        
+        ele.querySelector("#quantity").value = Math.max(parseInt(ele.querySelector("#quantity").value) - 1, 1)
+        ele.querySelector("#totalPrice").innerText = (parseFloat(ele.querySelector("#unitPrice").innerText) * parseFloat(ele.querySelector("#quantity").value)).toFixed(2)
+    })
+
+})
+
+
+
+
+
+
 
 //BINDING 
 function bindCheckOutDetails() {
+    //Cart Details binded through razor
     if (checkOutModel.billingAddress) {
-        billingAddress = checkOutModel.billingAddress.addressLine1
-        billingAddress2 = checkOutModel.billingAddress.addressLine2
-        billingState = checkOutModel.billingAddress.state
-        billingCity = checkOutModel.billingAddress.city
-        billingPostCode = checkOutModel.billingAddress.zipCode
-        billingPhone = checkOutModel.billingAddress.Phone
+        billingfname.value = checkOutModel.billingAddress.user.firstName
+        billinglname.value = checkOutModel.billingAddress.user.lastName
+        billingAddress.value = checkOutModel.billingAddress.addressLine1
+        billingAddress2.value = checkOutModel.billingAddress.addressLine2
+        /*billingState.value = checkOutModel.billingAddress.state*/
+        billingCity.value = checkOutModel.billingAddress.city
+        billingPostCode.value = checkOutModel.billingAddress.zipCode
+        billingPhone.value = checkOutModel.billingAddress.Phone
 
     }
-    if (checkOutModel.shippingAddress) {
-        shippingAddress = checkOutModel.shippingAddress.addressLine1
-        shippingAddress2 = checkOutModel.shippingAddress.addressLine2
-        shippingState = checkOutModel.shippingAddress.state
-        shippingCity = checkOutModel.shippingAddress.city
-        shippingPostCode = checkOutModel.shippingAddress.zipCode
-        shippingPhone = checkOutModel.shippingAddress.Phone
-    }
+    //if (checkOutModel.shippingAddress) {
+    //    shippingAddress.value = checkOutModel.shippingAddress.addressLine1
+    //    shippingAddress2.value = checkOutModel.shippingAddress.addressLine2
+    //    shippingState.value = checkOutModel.shippingAddress.state
+    //    shippingCity.value = checkOutModel.shippingAddress.city
+    //    shippingPostCode.value = checkOutModel.shippingAddress.zipCode
+    //    shippingPhone.value = checkOutModel.shippingAddress.Phone
+    //}
 
 }
 
-function placeOrder() {
+function placeOrder(e) {
     //check current availability
     //Confirm Address
-    confirmShippingAddress(getActiveShippingAddress());
+    //confirmShippingAddress(getActiveShippingAddress());
     //Confirm Payment Method
     //Post Order 
-    primeOrderRequest(getActiveCheckOut());
+    e.preventDefault()
+    primeOrderRequest(getCheckOutDetailsFromUser());
 }
 
-function currentCartDetails(){
-
-
+function currentCartDetails() {
+    let cartProducts;
     
+    cartElements.forEach((element) => {
+        if (element.querySelector("#productCheckbox:checked")) {
+            let cartProduct = {
+                productId: element.querySelector("#productId").value,
+                quantity: element.querySelector("#quantity").value
+            }
+            cartProducts.push(cartProduct)
+        }
+       
+    })
+    return cartProducts
 }
 
 function getCheckOutDetailsFromUser() {
+    let paymentMethod = document.querySelector("input[name='payment_option']:checked").value
+    let createNewAccount = document.querySelector("input[id='createaccount']").checked
+    let differentShippingAddress = document.querySelector("input[id='differentaddress']").checked
+    let passwordAttached = document.querySelector("input[id='passwordAttached']").value
     var billingAddressDetails = {
         AddressLine1: billingAddress.value,
-        AddressLine2: billingAddress2.value,
+        AddressLine2: billingAddress2.value,    
         City: billingCity.value,
-        State: billingState.value,
+        /*State: billingState.value,*/
         ZipCode: billingPostCode.value,
     };
 
@@ -74,14 +119,25 @@ function getCheckOutDetailsFromUser() {
                 AddressLine1: shippingAddress.value,
                 AddressLine2: shippingAddress2.value,
                 City: shippingCity.value,
-                State: shippingState.value,
+                /*State: shippingState.value,*/
                 ZipCode: shippingPostCode.value,
+                currentCartDetails: currentCartDetails(),
+                createNewAccount: createNewAccount,
+                passwordAttached: passwordAttached
             }
         };
     } else {
         return {
             BillingAddress: billingAddressDetails,
-            ShippingAddress: billingAddressDetails  // Use billing address details for shipping if same as billing
+            ShippingAddress: billingAddressDetails,
+            currentCartDetails: currentCartDetails(),
+            paymentMethod: paymentMethod,
+            billingfname: billingfname,
+            billinglname: billinglname,
+            shippingfname: billingfname,
+            shippinglname: billinglname,
+            createNewAccount: createNewAccount,
+            passwordAttached: passwordAttached
         };
     }
 }

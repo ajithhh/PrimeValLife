@@ -1,5 +1,5 @@
 ﻿using PrimeValLife.Core.Models.Users;
-using PrimeValLife.Web.Models.Products;
+
 
 namespace PrimeValLife.Web.Models.Orders
 {
@@ -10,7 +10,6 @@ namespace PrimeValLife.Web.Models.Orders
         public Address BillingAddress { get; set; }
         public Address ShippingAddress { get; set; }
         public decimal ShippingCharge {  get; set; }
-        public List<CartProducts> CartProducts {  get; set; }
 
 
     }

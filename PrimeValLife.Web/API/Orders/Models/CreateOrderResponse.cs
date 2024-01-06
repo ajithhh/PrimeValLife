@@ -1,5 +1,5 @@
 ﻿using PrimeValLife.Core.Models.Others;
-using PrimeValLife.Web.API.Common;
+using PrimeValLife.Web.API.Orders.Models.Common;
 namespace PrimeValLife.Web.API.Orders.Models
 {
     public class CreateOrderResponse:Response
@@ -13,7 +13,7 @@ namespace PrimeValLife.Web.API.Orders.Models
             }
         }
              
-        public string CustomerId { get; set; }
+        public int CustomerId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public PaymentAuthorization Authorization { get; set; }
 

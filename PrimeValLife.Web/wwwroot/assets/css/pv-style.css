@@ -10,3 +10,6 @@
 .table-wishlist td{
     padding:3px
 }
+.currency::before {
+    content: '\20B9';
+}

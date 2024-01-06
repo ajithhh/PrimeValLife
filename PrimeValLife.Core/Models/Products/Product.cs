@@ -35,7 +35,7 @@
         public List<ProductInfo> ProductInfo { get; set; }= new List<ProductInfo>();
         public List<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
         public List<ProductVariation> ProductVariations { get; set; } = new List<ProductVariation>();
-        
+        public string PrimaryImageUrl {  get; set; }
 
     }
 

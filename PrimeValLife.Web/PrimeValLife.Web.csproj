@@ -21,4 +21,8 @@
     <ProjectReference Include="..\TUT.Utilities\TUT.Utilities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Products\" />
+  </ItemGroup>
+
 </Project>

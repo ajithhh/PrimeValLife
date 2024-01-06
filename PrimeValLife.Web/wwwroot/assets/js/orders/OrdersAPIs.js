@@ -1,15 +1,12 @@
 ﻿
 function primeOrderRequest(data) {
-
-    let ConfirmOrderRequest = new Request(baseUrl + confirmOrderUrl, {
+    fetch(orderRequestUrl, {
         method: 'POST',
-        body: JSON.stringify(data),
-        headers: new Headers({
-            'Content-Type': 'application/json; charset=UTF-8'
-        })
-    });
-
-    fetch(request)
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
         .then(function (response) {
             // Handle response you get from the API
             if (response.body.Authorized) {
@@ -37,5 +34,5 @@ function confirmShippingAdddress(data) {
             } else {
                 alert("Address Could not be added")
             }
-        }
+        });
     }

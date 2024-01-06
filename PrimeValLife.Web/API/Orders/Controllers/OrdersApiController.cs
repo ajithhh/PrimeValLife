@@ -4,7 +4,10 @@ using PrimeValLife.Core;
 using PrimeValLife.Core.Models.Orders;
 using PrimeValLife.Core.Models.Users;
 using PrimeValLife.Web.API.Orders.Models;
+using PrimeValLife.Web.Controllers;
 using System.Security.Claims;
+using TUT.IAuth.IServices;
+using TUT.IAuth.Models;
 using TUT.Utilities.Models;
 
 namespace PrimeValLife.Web.API.Orders.Controllers
@@ -20,93 +23,90 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             _context = context;
         }
 
-        public async Task<CreateOrderResponse> CreateOrder(CreateOrderRequest request)
+        [HttpPost("CreateOrder")]
+        public async Task<ResponseItem<CreateOrderResponse>> CreateOrder([FromBody] CreateOrderRequest request)
         {
-            try
+            Order order = new Order();
+            User user;
+            string userIdentityId = null;
+            if (HttpContext.User.Identity!.IsAuthenticated)
             {
-                Order order = new Order();
-                order.OrderDate = request.RequestTime;
-                order.UserId = request.UserId;
-                order.PaymentMethod = request.PaymentMethod;
-                order.Status = "NEW";
-                order.PaymentAuthorization = (request.PaymentMethod == Core.Models.Others.PaymentMethod.COD) ? Core.Models.Others.PaymentAuthorization.COD : Core.Models.Others.PaymentAuthorization.PREPAID_INITIATED;
-                _context.Orders.Add(order);
-                await _context.SaveChangesAsync();
-                var product = await _context.Products.FindAsync(request.ProductId);
-                decimal price = product?.Price ?? 0; // Assuming Price is a decimal property; provide a default value if needed
-                OrderItem item = new OrderItem
+                userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            }
+            else
+            {
+                var _iservice = HttpContext.RequestServices.GetService<IIdentityService>();
+                var _ilogger = HttpContext.RequestServices.GetService<ILogger<AccountController>>();
+                AccountController accountController = new AccountController(_iservice, _ilogger);
+                TUTUser TUTuser = new TUTUser() { UserName = request.Billingfname + ' ' + request.Billinglname, Password = request.PasswordAttached };
+                var accountResult = await accountController.Register(TUTuser);
+                if (accountResult.Success)
                 {
-                    ProductId = request.ProductId,
-                    Quantity = request.Quantity,
-                    Price = price,
-                    OrderId = order.OrderId
-                };
-                _context.OrderItems.Add(item);
-                await _context.SaveChangesAsync();
-                if (order.OrderId != 0)
-                {
-                    return new CreateOrderResponse()
-                    {
-                        OrderId = order.OrderId,
-                        Authorization = order.PaymentAuthorization
-
-                    };
+                    userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 }
                 else
                 {
-                    return new CreateOrderResponse()
-                    {
-                        Error = new Common.Error("Order Not Created", 1)
-                    };
-
+                    throw new Exception("Cannot Create Order");
                 }
-            }
-            catch (Exception ex)
-            {
-                return new CreateOrderResponse() {
-                    Error = new Common.Error("UnExpected Error Occured.Contact DEV TEAM", 0)
-                };
 
             }
-        }
-        public async Task<CreateShippingResponse> CreateShippingInfo(CreateShippingRequest request)
-        {
-            try
+            List<OrderItem> orderItems = new List<OrderItem>();
+            foreach (var item in request.CartProducts)
             {
-                var matchedAddress = _context.Addresses.SingleOrDefault(address =>
-     address.AddressLine1.ToLower().Trim() == request.ShippingAddress.AddressLine1.ToLower().Trim() &&
-     address.AddressLine2.ToLower().Trim() == request.ShippingAddress.AddressLine2.ToLower().Trim() &&
-     address.City.ToLower().Trim() == request.ShippingAddress.City.ToLower().Trim() &&
-     address.State.ToLower().Trim() == request.ShippingAddress.State.ToLower().Trim() &&
-     address.ZipCode.ToLower().Trim() == request.ShippingAddress.ZipCode.ToLower().Trim());
-                if (matchedAddress == null || matchedAddress.AddressId == 0)
-                {
-                    _context.Addresses.Add(request.ShippingAddress);
-                    _context.SaveChanges();
-                }
-                matchedAddress = request.ShippingAddress;
-                return new CreateShippingResponse()
-                {
-                    ShippingAddressId = matchedAddress.AddressId,
-                    Available = true
-                };
+                orderItems.Add(new OrderItem() { ProductId = item.ProductId, Quantity = item.Quantity, Price = _context.Products.First(p => p.ProductId == item.ProductId).Price * item.Quantity });
             }
-            catch (Exception ex)
-            {
-                return new CreateShippingResponse()
-                {
-                    Error = new Common.Error("UnExpected Error Occured.Contact DEV TEAM", 0)
-                };
+            order.OrderDate = request.RequestTime;
+            user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
+            order.UserId = user.UserId;
+            order.OrderItems = orderItems;
+            order.PaymentMethod = request.PaymentMethod;
+            order.Status = OrderStatus.NEW;
+            order.PaymentAuthorization = (request.PaymentMethod == Core.Models.Others.PaymentMethod.COD) ? Core.Models.Others.PaymentAuthorization.COD : Core.Models.Others.PaymentAuthorization.PREPAID_INITIATED;
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+            var result = new ResponseItem<CreateOrderResponse>() { Success = true, Data = new CreateOrderResponse() { OrderId = order.OrderId, CustomerId = user.UserId, PaymentMethod = order.PaymentMethod, Authorization = order.PaymentAuthorization } };
+            return result;
+        }
+        //   public async Task<CreateShippingResponse> CreateShippingInfo(CreateShippingRequest request)
+        //   {
+        //       try
+        //       {
+        //           var matchedAddress = _context.Addresses.SingleOrDefault(address =>
+        //address.AddressLine1.ToLower().Trim() == request.ShippingAddress.AddressLine1.ToLower().Trim() &&
+        //address.AddressLine2.ToLower().Trim() == request.ShippingAddress.AddressLine2.ToLower().Trim() &&
+        //address.City.ToLower().Trim() == request.ShippingAddress.City.ToLower().Trim() &&
+        //address.State.ToLower().Trim() == request.ShippingAddress.State.ToLower().Trim() &&
+        //address.ZipCode.ToLower().Trim() == request.ShippingAddress.ZipCode.ToLower().Trim());
+        //           if (matchedAddress == null || matchedAddress.AddressId == 0)
+        //           {
+        //               _context.Addresses.Add(request.ShippingAddress);
+        //               _context.SaveChanges();
+        //           }
+        //           matchedAddress = request.ShippingAddress;
+        //           return new CreateShippingResponse()
+        //           {
+        //               ShippingAddressId = matchedAddress.AddressId,
+        //               Available = true
+        //           };
+        //       }
+        //       catch (Exception ex)
+        //       {
+        //           return new CreateShippingResponse()
+        //           {
+        //               Error = new Models.Common.Error("UnExpected Error Occured.Contact DEV TEAM", 0)
+        //           };
 
-            }
-        }
+        //       }
+        //   }
+
+
 
         [HttpPost("AddToCart")]
-        public async Task<ResponseItem<AddToCartResponse>> AddToCart ([FromBody]AddToCartRequest request)
+        public async Task<ResponseItem<AddToCartResponse>> AddToCart([FromBody] AddToCartRequest request)
         {
             ResponseItem<AddToCartResponse> response;
             //Check For Authorized User
-            
+
             var userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (HttpContext.User.Identity!.IsAuthenticated)
             {
@@ -114,18 +114,18 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 Cart cart;
                 CartItem item = new CartItem() { ProductId = request.ProductId, Quantity = request.Quantity };
                 //Authenticated User
-                user  = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
+                user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
                 cart = _context.Carts.FirstOrDefault(c => c.UserId == user.UserId)!;
                 if (cart == null)
                 {
                     cart = new Cart() { UserId = user.UserId, CartItems = new List<CartItem>() };
                     _context.Carts.Add(cart);
-                   await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
                 }
-                item = _context.CartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId && ci.CartId ==cart.CartId)!;
-                if(item!=null)
+                item = _context.CartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId && ci.CartId == cart.CartId)!;
+                if (item != null)
                 {
-                   item.Quantity=+request.Quantity;
+                    item.Quantity += request.Quantity;
                 }
                 else
                 {
@@ -146,11 +146,11 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 // Anonymous User
                 TempCart tempCart;
                 TempCartItem temCartitem = new TempCartItem() { ProductId = request.ProductId, Quantity = request.Quantity };
-                List<TempCartItem> tempCartItems = new List<TempCartItem>();                
+                List<TempCartItem> tempCartItems = new List<TempCartItem>();
                 string anonymousUserId;
-                if (HttpContext.Request.Cookies["GuestId"] ==null)
+                if (HttpContext.Request.Cookies["GuestId"] == null)
                 {
-                    anonymousUserId = new Guid().ToString();
+                    anonymousUserId = Guid.NewGuid().ToString();
                     HttpContext.Response.Cookies.Append("GuestId", anonymousUserId, new CookieOptions
                     {
                         // Additional cookie options can go here
@@ -160,7 +160,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                         SameSite = SameSiteMode.Strict, // Set the SameSite attribute
                     });
                     tempCartItems.Add(temCartitem);
-                     tempCart = new TempCart() { SessionId = anonymousUserId, TempCartItems = tempCartItems };
+                    tempCart = new TempCart() { SessionId = anonymousUserId, TempCartItems = tempCartItems };
                     _context.TempCarts.Add(tempCart);
                     _context.SaveChanges();
                 }
@@ -168,18 +168,21 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 {
                     anonymousUserId = HttpContext.Request.Cookies["GuestId"]!;
                     tempCart = _context.TempCarts.FirstOrDefault(tc => tc.SessionId == anonymousUserId)!;
-                     temCartitem = _context.TempCartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId && tempCart.TempCartId==ci.TempCartId)!;
+                    temCartitem = _context.TempCartItems.FirstOrDefault(ci => ci.ProductId == request.ProductId && tempCart.TempCartId == ci.TempCartId)!;
                     if (temCartitem != null)
                     {
-                        temCartitem.Quantity = +request.Quantity;
+                        temCartitem.Quantity += request.Quantity;
+
                     }
                     else
                     {
-                        tempCart.TempCartItems.Add(temCartitem!);
-                    } 
+                        temCartitem = new TempCartItem() { ProductId = request.ProductId, Quantity = request.Quantity };
+                        tempCart.TempCartItems = [temCartitem!];
+                    }
                 }
                 try
                 {
+
                     await _context.SaveChangesAsync();
                     response = new ResponseItem<AddToCartResponse>() { Data = new AddToCartResponse() { CartItemId = temCartitem!.TempCartItemId }, Success = temCartitem.TempCartItemId > 0 };
                 }
@@ -189,7 +192,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 }
             }
             return response;
-                       
+
         }
 
 

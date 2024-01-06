@@ -1,4 +1,4 @@
-﻿namespace PrimeValLife.Web.API.Common
+﻿namespace PrimeValLife.Web.API.Orders.Models.Common
 {
     public class Response
     {

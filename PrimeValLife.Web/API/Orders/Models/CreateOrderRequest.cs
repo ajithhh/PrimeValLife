@@ -1,16 +1,21 @@
 ﻿using PrimeValLife.Core.Models.Others;
-using PrimeValLife.Web.API.Common;
+using PrimeValLife.Core.Models.Users;
+using PrimeValLife.Web.API.Orders.Models.Common;
 
 namespace PrimeValLife.Web.API.Orders.Models
 {
     public class CreateOrderRequest:Request
     {
-        public int UserId {  get; set; }
-        public int ProductId { get; set; }
-        public string SKU {  get; set; }
-        public int Quantity {  get; set; }
-        public int shippingAddressId {  get; set; }
+        public  Address BillingAddress { get; set; }
+        public Address ShippingAddress { get; set; }
+        public List<CartItem> CartProducts { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
-        
+        public bool CreateNewAccount {  get; set; }
+
+        public string PasswordAttached {  get; set; }
+        public string Billingfname {  get; set; }
+        public string Billinglname { get; set; }
+        public string shippingfname { get; set; }
+        public string shippinglname { get; set; }
     }
 }
