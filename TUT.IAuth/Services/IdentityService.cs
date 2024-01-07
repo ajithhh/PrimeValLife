@@ -46,7 +46,7 @@ public class IdentityService(UserManager<IdentityUser> userManager,
         {
             UserName = tutUser.UserName,
         };
-        var result = await signInManager.PasswordSignInAsync(user.UserName, tutUser.Password, false, false);
+        var result = await signInManager.PasswordSignInAsync(user.UserName, tutUser.Password, tutUser.RememberMe, false);
         if (result.Succeeded)
         {
             response.Success = true;

@@ -1,7 +1,9 @@
 namespace PrimeValLife.Web.Controllers;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PrimeValLife.Web.Models.Account;
 using System.Security.Claims;
 using TUT.IAuth.IServices;
 using TUT.IAuth.Models;
@@ -27,16 +29,9 @@ public class AccountController(IIdentityService identityService, ILogger<Account
         return View();
     }
 
-    public IActionResult Login(string returnUrl)
+    public IActionResult Login()
     {
-        if (Url.IsLocalUrl(returnUrl))
-        {
-            return Redirect(returnUrl);
-        }
-        else
-        {
-            return RedirectToAction("Index", "Home");
-        }
+        return View();
     }
 
     public IActionResult ForgotPassword()
@@ -62,20 +57,22 @@ public class AccountController(IIdentityService identityService, ILogger<Account
     }
 
     [HttpPost]
-    public async Task<ResponseItem<string>> SignIn([FromBody] TUTUser user)
+    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
     {
-        ResponseItem<string> response = new();
-        var result = await _iservice.SignIn(user);
-        if (result.Success)
+        TUTUser tutUser = new() { UserName = model.Email, Password = model.Password, RememberMe = model.RememberMe };
+        if (ModelState.IsValid)
         {
-            response.Success = true;
+            var result = await _iservice.SignIn(tutUser);
+
+            if (result.Success)
+            {
+                return Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToAction("index", "home");
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
         }
-        if (result.Errors != null)
-        {
-            response.Success = false;
-            response.Errors = result.Errors;
-        }
-        return response;
+
+        return View(model);
     }
 
     public async Task<IActionResult> Logout()

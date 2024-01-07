@@ -1,9 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Sign In";
 }
-@section scripts {
-    <script src="js/account/login.js"></script>
-}
+@using PrimeValLife.Web.Models.Account;
+@model LoginViewModel;
 
 <main class="main pages">
     <div class="page-header breadcrumb-wrap">
@@ -29,26 +28,29 @@
                                         <h1 class="mb-5">Login</h1>
                                         <p class="mb-30">Don't have an account? <a asp-controller="Account" asp-action="Register">Create here</a></p>
                                     </div>
-                                    <div>
+                                    <form method="post">
+                                        <div asp-validation-summary="All" class="text-danger"></div>
                                         <div class="form-group">
-                                            <input id="txtEmail" type="text" required="" name="email" placeholder="Username or Email *" />
+                                            <input asp-for="Email" type="text" required="" name="email" placeholder="Username or Email *" />
+                                            <span asp-validation-for="Email" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <input id="txtPassword" required="" type="password" name="password" placeholder="Your password *" />
+                                            <input asp-for="Password" required="" type="password" name="password" placeholder="Your password *" />
+                                            <span asp-validation-for="Password" class="text-danger"></span>
                                         </div>
                                         <div class="login_footer form-group mb-50">
                                             <div class="chek-form">
                                                 <div class="custome-checkbox">
-                                                    <input class="form-check-input" type="checkbox" name="checkbox" id="cbRememberMe" value="" />
-                                                    <label class="form-check-label" for="exampleCheckbox1"><span>Remember me</span></label>
+                                                    <input asp-for="RememberMe" class="form-check-input" type="checkbox" name="rememberMe" id="cbRememberMe" />
+                                                    <label class="form-check-label" for="cbRememberMe"><span>Remember me</span></label>
                                                 </div>
                                             </div>
                                             <a class="text-muted" asp-controller="Account" asp-action="ForgotPassword">Forgot password?</a>
                                         </div>
                                         <div class="form-group">
-                                            <button id="btnSubmit" class="btn btn-heading btn-block hover-up" name="login">Log in</button>
+                                            <button type="submit" class="btn btn-heading btn-block hover-up" name="login">Log in</button>
                                         </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
