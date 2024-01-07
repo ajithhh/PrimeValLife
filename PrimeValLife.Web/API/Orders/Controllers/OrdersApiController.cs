@@ -60,17 +60,32 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             {
                 orderItems.Add(new OrderItem() { ProductId = item.ProductId, Quantity = item.Quantity, Price = _context.Products.First(p => p.ProductId == item.ProductId).Price * item.Quantity });
             }
-            order.OrderDate = DateTime.Now;
-            user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
-            order.UserId = user.UserId;
-            order.OrderItems = orderItems;
-            order.PaymentMethod = request.PaymentMethod;
-            order.Status = OrderStatus.NEW;
-            order.PaymentAuthorization = (request.PaymentMethod == Core.Models.Others.PaymentMethod.COD) ? Core.Models.Others.PaymentAuthorization.COD : Core.Models.Others.PaymentAuthorization.PREPAID_INITIATED;
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-            var result = new ResponseItem<CreateOrderResponse>() { Success = true, Data = new CreateOrderResponse() { OrderId = order.OrderId, CustomerId = user.UserId, PaymentMethod = order.PaymentMethod, Authorization = order.PaymentAuthorization } };
-            return result;
+            ResponseItem<CreateOrderResponse> result;
+            try
+            {
+                order.OrderDate = DateTime.Now;
+                user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
+                order.UserId = user.UserId;
+                order.OrderItems = orderItems;
+                order.PaymentMethod = request.PaymentMethod;
+                order.Status = OrderStatus.NEW;
+                order.PaymentAuthorization = (request.PaymentMethod == Core.Models.Others.PaymentMethod.COD) ? Core.Models.Others.PaymentAuthorization.COD : Core.Models.Others.PaymentAuthorization.PREPAID_INITIATED;
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+                foreach (var item in order.OrderItems)
+                {
+                        CartItem cartItem = _context.CartItems.FirstOrDefault(ci=>ci.ProductId == item.ProductId)!;
+                    _context.Remove(cartItem);
+                }
+                await _context.SaveChangesAsync();
+                result = new ResponseItem<CreateOrderResponse>() { Success = true, Data = new CreateOrderResponse() { OrderId = order.OrderId, CustomerId = user.UserId, PaymentMethod = order.PaymentMethod, Authorization = order.PaymentAuthorization } };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result = new ResponseItem<CreateOrderResponse>() { Success = false, Data = new CreateOrderResponse() { } ,Errors =ex.Message};
+            }
+            return null;
         }
         //   public async Task<CreateShippingResponse> CreateShippingInfo(CreateShippingRequest request)
         //   {
@@ -117,7 +132,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             {
                 User user;
                 Cart cart;
-                CartItem item = new CartItem() { ProductId = request.ProductId, Quantity = request.Quantity };
+                CartItem item;
                 //Authenticated User
                 user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
                 cart = _context.Carts.FirstOrDefault(c => c.UserId == user.UserId)!;
@@ -134,6 +149,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 }
                 else
                 {
+                    item = new CartItem() { ProductId = request.ProductId, Quantity = request.Quantity };
                     cart.CartItems.Add(item!);
                 }
                 try

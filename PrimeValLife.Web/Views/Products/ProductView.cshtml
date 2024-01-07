@@ -62,7 +62,7 @@
                                         </div> *@
                                         <div class="clearfix product-price-cover">
                                             <div class="product-price primary-color float-left">
-                                                <span class="current-price text-brand">&#x20b9;
+                                                <span class="current-price text-brand currency">
                                                     @if (Model.Product.Price % 1 == 0)
                                                     {
                                                         @((int)Model.Product.Price)
@@ -88,7 +88,7 @@
                                                         }
                                                         % Off
                                                     </span>
-                                                    <span class="old-price font-md ml-15">&#x20b9;
+                                                    <span class="old-price font-md ml-15 currency">
                                                         @if (Model.Product.StandardCost % 1 == 0)
                                                         {
                                                             @((int)Model.Product.StandardCost)

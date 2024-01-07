@@ -6,11 +6,12 @@ function primeOrderRequest(data) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data)
-    })
+    }).then((response) => {return response.json() })
         .then(function (response) {
             // Handle response you get from the API
-            if (response.body.Authorized) {
+            if (response.success) {
                 alert("Order Placed Successfully")
+                window.location.reload()
             } else {
                 alert("Order Creation failed")
             }

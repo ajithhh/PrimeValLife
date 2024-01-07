@@ -102,8 +102,12 @@ function getCheckOutDetailsFromUser() {
     let paymentMethod = document.querySelector("input[name='payment_option']:checked").value
     let createNewAccount = document.querySelector("input[id='createaccount']").checked
     let differentShippingAddress = document.querySelector("input[id='differentaddress']").checked
-    let passwordAttached = document.querySelector("input[id='passwordAttached']").value
-    let emailAttached = document.querySelector("input[id='emailAttached']").value
+    let passwordAttached;
+    let emailAttached;
+    if (createNewAccount) {
+        passwordAttached = document.querySelector("input[id='passwordAttached']").value
+        emailAttached = document.querySelector("input[id='emailAttached']").value
+    }   
     var billingAddressDetails = {
         AddressLine1: billingAddress.value,
         AddressLine2: billingAddress2.value,

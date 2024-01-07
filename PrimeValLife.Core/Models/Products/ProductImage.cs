@@ -16,5 +16,9 @@ namespace PrimeValLife.Core.Models.Products
 
         public string ImageUrl { get; set; }
 
+        [ForeignKey("ProductVariation")]
+        public int ProductVariationId {  get; set; }
+        public ProductVariation ProductVariation { get; set; }
+
     }
 }

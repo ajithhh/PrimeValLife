@@ -35,6 +35,8 @@ namespace PrimeValLife.Web.Controllers.Orders
                     _context.Carts.Add(cart);
                     await _context.SaveChangesAsync();
                 }
+                checkOutView.User = user;
+                checkOutView.Cart = cart;
             }
             else
             {
