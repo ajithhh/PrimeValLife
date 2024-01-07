@@ -1,0 +1,6 @@
+@TUT.Payments.PhonePe_HostAddress = http://localhost:5056
+
+GET {{TUT.Payments.PhonePe_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

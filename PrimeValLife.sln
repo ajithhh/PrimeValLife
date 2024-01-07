@@ -11,9 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimeValLife.Core", "PrimeV
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrimeValLife.Admin", "PrimeValLife.Admin\PrimeValLife.Admin.csproj", "{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TUT.Payments.PhonePe", "TUT.Payments.PhonePe\TUT.Payments.PhonePe.csproj", "{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TUT.Utilities", "TUT.Utilities\TUT.Utilities.csproj", "{81D1EDF0-661F-43A6-BA69-9F191E170F82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TUT.Utilities", "TUT.Utilities\TUT.Utilities.csproj", "{81D1EDF0-661F-43A6-BA69-9F191E170F82}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payments", "Payments", "{5A13924A-ECDB-4610-8ED7-F4BFA3CEC01E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TUT.Payments.PhonePe", "TUT.Payments.PhonePe\TUT.Payments.PhonePe.csproj", "{7C54EC59-3ED1-4543-9AE4-BE95666022DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{26F0A6C6-89E2-4B8C-836A-9252890073F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,17 +41,23 @@ Global
 		{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1779BE6-DC1E-4977-BE4E-9D35FA1B412E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15E40E8C-E867-46B3-B2A4-B3D7EDC1B7E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{81D1EDF0-661F-43A6-BA69-9F191E170F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{81D1EDF0-661F-43A6-BA69-9F191E170F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81D1EDF0-661F-43A6-BA69-9F191E170F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81D1EDF0-661F-43A6-BA69-9F191E170F82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C54EC59-3ED1-4543-9AE4-BE95666022DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C54EC59-3ED1-4543-9AE4-BE95666022DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C54EC59-3ED1-4543-9AE4-BE95666022DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C54EC59-3ED1-4543-9AE4-BE95666022DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8CFE8223-E588-4602-AC72-90347A65768D} = {26F0A6C6-89E2-4B8C-836A-9252890073F3}
+		{81D1EDF0-661F-43A6-BA69-9F191E170F82} = {26F0A6C6-89E2-4B8C-836A-9252890073F3}
+		{5A13924A-ECDB-4610-8ED7-F4BFA3CEC01E} = {26F0A6C6-89E2-4B8C-836A-9252890073F3}
+		{7C54EC59-3ED1-4543-9AE4-BE95666022DC} = {5A13924A-ECDB-4610-8ED7-F4BFA3CEC01E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6CAD6F13-FAFE-4415-A738-A63CE504DAED}
