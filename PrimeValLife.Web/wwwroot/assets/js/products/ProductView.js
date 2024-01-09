@@ -8,7 +8,18 @@ let btnBuyNow = document.getElementById("buyNow")
 function _initialize() {
     qtyVal.innerText=1
 }
+function getBuyerItems() {
+    return {
+        ProductId: product.product.productId,
+        Quantity: parseInt(qtyVal.innerText)
+    }
+}
 
+function addToCart() {
+    requestAddToCart(getBuyerItems());
+    loadCartItems();
+    //updateCartUI();
+}
 
 //EVENTLISTENERS
 qtyUp.addEventListener("click", (e) => {

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PrimeValLife.Core;
 using PrimeValLife.Core.Models.Orders;
 using PrimeValLife.Core.Models.Users;
+using PrimeValLife.Core.Utilities;
 using PrimeValLife.Web.API.Orders.Models;
 using PrimeValLife.Web.Controllers;
 using System.Security.Claims;
@@ -215,7 +217,83 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             return response;
 
         }
+        [Route("GetActiveCartItems")]
+        public async Task<ResponseItem<List<CartItem>>> GetActiveCartItems()
+        {
 
+            User user = null;
+            string userIdentityId = null;
+            Cart cart = null;
+            if (HttpContext.User.Identity!.IsAuthenticated)
+            {
+                userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
+                cart = _context.Carts.Include(c => c.CartItems).ThenInclude(ci => ci.Product).FirstOrDefault(c => c.UserId == user.UserId)!;
+                if (cart == null)
+                {
+                    cart = new Cart() { UserId = user.UserId, CartItems = new List<CartItem>() };
+                    _context.Carts.Add(cart);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                TempCart tempCart;
+                string anonymousUserId;
+                if (HttpContext.Request.Cookies["GuestId"] == null)
+                {
+                    anonymousUserId = Guid.NewGuid().ToString();
+                    HttpContext.Response.Cookies.Append("GuestId", anonymousUserId, new CookieOptions
+                    {
+                        // Additional cookie options can go here
+                        Expires = DateTimeOffset.Now.AddDays(7), // Cookie expiration time
+                        HttpOnly = false, // Whether the cookie is accessible through JavaScript
+                        Secure = true, // Whether the cookie is sent only over HTTPS
+                        SameSite = SameSiteMode.Strict, // Set the SameSite attribute
+                    });
+                    tempCart = new TempCart() { SessionId = anonymousUserId };
+                    _context.TempCarts.Add(tempCart);
+                    _context.SaveChanges();
+                    return new ResponseItem<List<CartItem>>() { Success=true,Data=new List<CartItem>()};
+                }
+                else
+                {
+                    anonymousUserId = HttpContext.Request.Cookies["GuestId"]!;
+                    tempCart = _context.TempCarts.Include(tc => tc.TempCartItems).ThenInclude(tci => tci.Product).FirstOrDefault(tc => tc.SessionId == anonymousUserId)!;
+
+                }
+                cart = TempCart2Cart.ConvertTempCart2Cart(tempCart);
+
+            }
+            return new ResponseItem<List<CartItem>>() { Success = true, Data = cart.CartItems };
+        }
+
+        [HttpDelete("RemoveItemFromCart")]
+        public async Task<ResponseItem<dynamic>> RemoveItemFromCart(int id)
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+            {
+                var item = await _context.CartItems.FindAsync(id);
+                if (item != null)
+                {
+                    _context.CartItems.Remove(item);
+                    _context.SaveChanges();
+                }
+                return new ResponseItem<dynamic> { Success = true, Data = null };
+
+            }
+            else
+            {
+                var item = await _context.TempCartItems.FindAsync(id);
+                if (item != null)
+                {
+                    _context.TempCartItems.Remove(item);
+                    _context.SaveChanges();
+                }
+                return new ResponseItem<dynamic> { Success = true, Data = null };
+            }
+
+        }
 
     }
 }

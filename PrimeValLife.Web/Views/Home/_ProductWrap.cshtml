@@ -6,6 +6,8 @@
                 <img class="default-img" src="@Model.PrimaryImageUrl" alt="" />
                 @* <img class="hover-img" src="assets/imgs/shop/product-1-2.jpg" alt="" /> *@
             </a>
+            <input type="hidden" value="@Model.ProductId" id="productId" />
+            <input type="hidden" value="@Model.ProductVariations.First().ProductVariationId" id="productVariationId" />
         </div>
        @*  <div class="product-action-1">
             <a aria-label="Quick view" class="action-btn small hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"> <i class="fi-rs-eye"></i></a>

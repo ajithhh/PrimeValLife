@@ -1,4 +1,4 @@
-﻿function requestAddToCart(data) {
+﻿function requestAddToCart(data, loadCartItems) {
     fetch(addToCartUrl, {
         method: 'POST',
         headers: {
@@ -13,6 +13,7 @@
     }).then(data => {
         if (data.success) {
             alert("Item added to cart")
+            loadCartItems();
         } else {
             alert("Error Occurred")
         }
@@ -24,17 +25,18 @@ function getBuyerItems(e) {
 
     return {
         ProductId: e.querySelector("#productId").value,
-        ProductId: e.querySelector("#productVariationId").value,
+        ProductVariationId: e.querySelector("#productVariationId").value,
         Quantity: 1
     }
 }
 
 function addToCart(e) {
-    requestAddToCart(getBuyerItems(e));
-    //updateCartUI();
+    requestAddToCart(getBuyerItems(e),loadCartItems);
+    
 }
 document.addEventListener("click",  (e) => {
     if (e.target.className.includes("addToCart")) {
         addToCart(e)
+
     }
 })
