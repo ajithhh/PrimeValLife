@@ -13,20 +13,25 @@ floatingCart.addEventListener("click",(e) => {
 
 // Fetch data from the API
 function loadCartItems() {
-    fetch(getActiveCartItemsUrl, {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            data=data.data.$values
-            // Process the data and display it
-                displayCartItems(data); 
+ /*   initTerminateLoader(floatingCart).then(() => {*/
+        fetch(getActiveCartItemsUrl, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+
+            }
         })
-        .catch(error => console.error('Error fetching cart data:', error));
+            .then(response => response.json())
+            .then(data => {
+                data = data.data.$values
+                // Process the data and display it
+                displayCartItems(data);
+            })
+            .catch(error => console.error('Error fetching cart data:', error));
+//})
+    //.then(() => {
+    //    initTerminateLoader(floatingCart)
+    //});
 }
 function removeItem(e) {
     let itemId = e.target.getAttribute("data-target")
@@ -72,4 +77,34 @@ function displayCartItems(cartItems) {
     const total = cartItems.reduce((sum, item) => sum + (item.quantity * item.product.price), 0);
     cartTotalElement.textContent = `$${total.toFixed(2)}`;
 }
+
+//function initTerminateLoader(floatingCart) {
+//    let elements = floatingCart.querySelectorAll(".placeholder-glow,.placeholder")
+//    elements.forEach(element => {
+//        let phg = element.className.includes("placeholder-glow")
+//        let ph = element.className.includes("placeholder")
+//        if (phg || ph) {
+//            if (ph){
+//                element.classList.remove("placeholder")
+//            }
+//            else {
+//                element.classList.remove("placeholder-glow")
+//            }
+//            element.classList.remove("placeholder-glow");
+//        } else {
+//            floatingCart.classList.add("placeholder-glow");
+//        }
+//    })
+    
+
+    // Corrected Promise instantiation
+//    return new Promise((resolve, reject) => {
+//        // You can perform asynchronous operations here if needed
+//        // For example, use setTimeout to simulate an asynchronous operation
+//        setTimeout(() => {
+//            resolve(); // Resolve the promise when the operation is complete
+//        }, 1000); // Adjust the timeout as needed
+//    });
+
+//}
 
