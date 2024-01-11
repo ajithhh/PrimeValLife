@@ -19,7 +19,7 @@
         @Model.Product.Description
     </td>
     <td class="price" data-title="Price">
-        <h4 id="unitPrice" class="text-body currency">@string.Format("{0:F2}", Model.Product.Price) </h4>
+        <h5 id="unitPrice" class="text-body currency">@string.Format("{0:F2}", Model.Product.Price) </h5>
     </td>
     <td class="text-center detail-info" data-title="Stock">
         <div class="detail-extralink mr-15">
@@ -32,9 +32,9 @@
     </td>
     <td class="price" data-title="Price">
         
-        <h4 id="totalPrice" class="text-brand currency">
+        <h5 id="totalPrice" class="text-brand currency">
             @string.Format("{0:F2}", Model.Product.Price * Model.Quantity)
-        </h4>
+        </h5>
     </td>
     <td class="action text-center" data-title="Remove"><a href="#" id="removeFromCart" class="text-body"><i class="fi-rs-trash"></i></a></td>
 </tr>

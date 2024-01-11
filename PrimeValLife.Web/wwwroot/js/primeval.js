@@ -13,7 +13,7 @@ floatingCart.addEventListener("click",(e) => {
 
 // Fetch data from the API
 function loadCartItems() {
- /*   initTerminateLoader(floatingCart).then(() => {*/
+    initTerminateLoader(floatingCart).then(() => {
         fetch(getActiveCartItemsUrl, {
             method: "GET",
             headers: {
@@ -28,10 +28,10 @@ function loadCartItems() {
                 displayCartItems(data);
             })
             .catch(error => console.error('Error fetching cart data:', error));
-//})
-    //.then(() => {
-    //    initTerminateLoader(floatingCart)
-    //});
+})
+    .then(() => {
+        initTerminateLoader(floatingCart)
+    });
 }
 function removeItem(e) {
     let itemId = e.target.getAttribute("data-target")
@@ -49,10 +49,11 @@ function removeItem(e) {
 function displayCartItems(cartItems) {
     const cartItemList = document.getElementById('cartItemList');
     const cartTotalElement = document.getElementById('cartTotal');
-
+    const cartItemCount = document.getElementById('cartItemCount');
+   
     // Clear previous items
     cartItemList.innerHTML = '';
-
+    cartItemCount.innerText = cartItems.length
     // Iterate over the cart items and create the structure dynamically
     cartItems.forEach(item => {
         const listItem = document.createElement('li');
@@ -78,33 +79,21 @@ function displayCartItems(cartItems) {
     cartTotalElement.textContent = `$${total.toFixed(2)}`;
 }
 
-//function initTerminateLoader(floatingCart) {
-//    let elements = floatingCart.querySelectorAll(".placeholder-glow,.placeholder")
-//    elements.forEach(element => {
-//        let phg = element.className.includes("placeholder-glow")
-//        let ph = element.className.includes("placeholder")
-//        if (phg || ph) {
-//            if (ph){
-//                element.classList.remove("placeholder")
-//            }
-//            else {
-//                element.classList.remove("placeholder-glow")
-//            }
-//            element.classList.remove("placeholder-glow");
-//        } else {
-//            floatingCart.classList.add("placeholder-glow");
-//        }
-//    })
-    
+function initTerminateLoader(floatingCart) {
+    let childNodes = getLeafNodes(floatingCart);
+    floatingCart.classList.toggle("placeholder-wave")
+    childNodes.forEach((ele) => {
+        ele.classList.toggle("placeholder")
+        
+    })  
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(); 
+        }, 1000); 
+    });
 
-    // Corrected Promise instantiation
-//    return new Promise((resolve, reject) => {
-//        // You can perform asynchronous operations here if needed
-//        // For example, use setTimeout to simulate an asynchronous operation
-//        setTimeout(() => {
-//            resolve(); // Resolve the promise when the operation is complete
-//        }, 1000); // Adjust the timeout as needed
-//    });
-
-//}
-
+}
+function getLeafNodes(rootElement) {
+    const leafNodes = rootElement.querySelectorAll(':scope *:not(:has(*))');
+    return Array.from(leafNodes);
+}

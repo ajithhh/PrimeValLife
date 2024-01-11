@@ -12,7 +12,6 @@
         }
     }).then(data => {
         if (data.success) {
-            alert("Item added to cart")
             loadCartItems();
         } else {
             alert("Error Occurred")

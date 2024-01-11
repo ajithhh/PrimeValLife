@@ -63,7 +63,7 @@
                                 <div class="header-action-icon-2">
                                         <a class="mini-cart-icon" href="@Url.Action("OrdersCheckout","Orders")">
                                         <img alt="Nest" src="assets/imgs/theme/icons/icon-cart.svg" />
-                                        <span class="pro-count blue">2</span>
+                                        <span id="cartItemCount" class="pro-count blue">0</span>
                                     </a>
                                     <a href="@Url.Action("OrdersCheckout","Orders")"><span class="lable">Cart</span></a>
                                    @{await Html.RenderPartialAsync("_FloatingCart");}
