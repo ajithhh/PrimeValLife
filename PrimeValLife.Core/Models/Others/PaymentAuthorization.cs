@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace PrimeValLife.Core.Models.Others;
 
-namespace PrimeValLife.Core.Models.Others
+using System.ComponentModel;
+
+public enum PaymentAuthorization
 {
-    public enum PaymentAuthorization
-    {
-        COD,
-        PREPAID_INITIATED,
-        PREPAID_PENDING,
-        PREPAID_REJECTED,
-        PREPAID_AUTHORIZED
-    }
+    [Description("COD")]
+    COD,
+    [Description("PREPAID INITIATED")]
+    PREPAID_INITIATED,
+    [Description("PREPAID PENDING")]
+    PREPAID_PENDING,
+    [Description("PREPAID REJECTED")]
+    PREPAID_REJECTED,
+    [Description("PREPAID AUTHORIZED")]
+    PREPAID_AUTHORIZED
 }

@@ -1,8 +1,11 @@
-﻿namespace PrimeValLife.Core.Models.Others
+﻿namespace PrimeValLife.Core.Models.Others;
+
+using System.ComponentModel;
+
+public enum PaymentMethod
 {
-    public enum PaymentMethod
-    {
-        COD,
-        PREPAID
-    }
+    [Description("COD")]
+    COD,
+    [Description("PREPAID")]
+    PREPAID
 }

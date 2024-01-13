@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace PrimeValLife.Core.Models.Orders;
 
-namespace PrimeValLife.Core.Models.Orders
+using System.ComponentModel;
+
+public enum OrderStatus
 {
-    public enum OrderStatus
-    {
-        [EnumMember(Value ="NEW")]
-        NEW,
-        [EnumMember(Value = "PENDING")]
-        PENDING,
-        [EnumMember(Value = "APPROVED")]
-        APPROVED,
-    }
+    [Description("NEW")]
+    NEW,
+    [Description("PENDING")]
+    PENDING,
+    [Description("APPROVED")]
+    APPROVED,
+    [Description("SHIPPED")]
+    SHIPPED,
+    [Description("DELIVERED")]
+    DELIVERED,
+    [Description("CANCELLED")]
+    CANCELLED
 }
