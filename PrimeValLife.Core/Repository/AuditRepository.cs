@@ -11,7 +11,7 @@ public class AuditRepository : IAuditRepository
 {
     #region Declarations
     private readonly IConfiguration _config;
-    public IDbConnection MIYDapperDbConnection => new SqlConnection(_config.GetConnectionString(Constants.PvlDbConnection));
+    public IDbConnection MIYDapperDbConnection => new SqlConnection(_config.GetConnectionString(""));
     #endregion
 
     #region Constructor
