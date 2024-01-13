@@ -6,21 +6,28 @@ using PrimeValLife.Web.Models;
 using PrimeValLife.Web.Models.Dashboard;
 using System.Diagnostics;
 using System.Security.Claims;
+using PrimeValLife.Core.Utilities;
 
-public class DashboardController : Controller
+public class DashboardController(ILogger<DashboardController> logger, PrimeValLifeDbContext context) : Controller
 {
-    private readonly ILogger<DashboardController> _logger;
-    private readonly PrimeValLifeDbContext _context;
-
-    public DashboardController(ILogger<DashboardController> logger, PrimeValLifeDbContext context)
-    {
-        _logger = logger;
-        _context = context;
-    }
+    private readonly ILogger<DashboardController> _logger = logger;
+    private readonly PrimeValLifeDbContext _context = context;
+    private readonly DbUtilities? _utils = new(context);
 
     public IActionResult Index()
     {
-        var query = _context.Orders.Where(o => o.UserId == 4)
+        ClaimsPrincipal currentUser = HttpContext.User;
+        string? aspId = currentUser.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        int id = 0;
+        if (string.IsNullOrWhiteSpace(aspId) || _utils == null)
+        {
+            RedirectToAction("Index", "Home");
+        }
+        else
+        {
+            id = _utils.GetUserId(aspId);
+        }
+        var query = _context.Orders.Where(o => o.UserId == id)
                     .Join(_context.OrderItems, o => o.OrderId, oi => oi.OrderId, (o, oi) => new { o, oi })
                     .GroupBy(g => new
                     {
