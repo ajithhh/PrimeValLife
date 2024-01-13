@@ -16,4 +16,12 @@
 .form-check-input:checked {
     background-color: #6cb483;
     border-color: #6cb483;
-}   
+}
+.pvl-logo {
+    width: 100px
+}
+@media (max-width: 770px) {
+    .pvl-logo {
+        width: 60px
+    }
+}
