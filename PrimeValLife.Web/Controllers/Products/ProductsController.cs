@@ -43,5 +43,12 @@ namespace PrimeValLife.Web.Controllers.Products
             return View(productView);
         }
 
+        public async Task<IActionResult> Shop(string query=null)
+        {
+
+
+            return View("Shop");
+        }
+
     }
 }
