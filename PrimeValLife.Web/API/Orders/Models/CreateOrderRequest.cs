@@ -4,8 +4,8 @@ namespace PrimeValLife.Web.API.Orders.Models
 {
     public class CreateOrderRequest
     {
-        public OrderAddress BillingAddress { get; set; }
-        public OrderAddress ShippingAddress { get; set; }
+        public required OrderAddress BillingAddress { get; set; }
+        public required OrderAddress ShippingAddress { get; set; }
         public List<CartProducts> CartProducts { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public bool? CreateNewAccount {  get; set; }

@@ -37,6 +37,12 @@ namespace PrimeValLife.Web.Controllers.Orders
                 }
                 checkOutView.User = user;
                 checkOutView.Cart = cart;
+                if (user != null)
+                {
+                    checkOutView.BillingAddress = _context.Addresses.FirstOrDefault(a => a.UserId == user.UserId && a.AddressType == AddressType.BILLING);
+                    checkOutView.ShippingAddress = _context.Addresses.FirstOrDefault(a => a.UserId == user.UserId && a.AddressType == AddressType.SHIPPING);
+                }
+
             }
             else
             {

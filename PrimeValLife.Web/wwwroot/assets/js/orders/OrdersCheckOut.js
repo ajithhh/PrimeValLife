@@ -43,7 +43,7 @@ cartElements.forEach((ele) => {
 
 })
 cart.addEventListener("click", (e) => {
-    if (e.target.parentElement.classList.contains("removeCitem")) {
+    if (e.target.classList.contains("removeCitem")) {
         removeItem(e);
         window.location.reload();
     }
