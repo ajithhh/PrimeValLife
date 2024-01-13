@@ -12,7 +12,6 @@
         }
     }).then(data => {
         if (data.success) {
-            loadCartItems();
         } else {
             alert("Error Occurred")
         }
@@ -35,7 +34,13 @@ function addToCart(e) {
 }
 document.addEventListener("click",  (e) => {
     if (e.target.className.includes("addToCart")) {
-        addToCart(e)
-
+        buttonLoader(e.target, "Adding to Cart...").then(() => {
+            addToCart(e)
+            
+        }).then(() => {
+            loadCartItems();
+            buttonLoader(e.target,undefined,"Add to Cart",1)
+        })
+        
     }
 })
