@@ -65,8 +65,8 @@ function displayCartItems(cartItems) {
           <a href="products/productView?id=${item.product.productId}"><img alt="${item.product.name}" src="${item.product.primaryImageUrl}" /></a>
         </div>
         <div class="shopping-cart-title">
-          <h4><a href="products/productView?id=${item.product.productId}">${item.product.productName}</a></h4>
-          <h4><span>${item.quantity} × </span>${item.product.price *item.quantity}</h4>
+          <h4><a href="products/productView?id=${item.product.productId}">${item.product.name}</a></h4>
+          <h4><span>${item.quantity} × </span>${item.product.price}</h4>
         </div>
         <div class="shopping-cart-delete">
           <a class="removeCitem" data-target="${item.cartItemId}"><i data-target="${item.cartItemId}" class="fi-rs-cross-small removeCitem"></i></a>
@@ -78,7 +78,7 @@ function displayCartItems(cartItems) {
 
     // Calculate and display the total
     const total = cartItems.reduce((sum, item) => sum + (item.quantity * item.product.price), 0);
-    cartTotalElement.textContent = `$${total.toFixed(2)}`;
+    cartTotalElement.textContent = `${total.toFixed(2)}`;
 }
 
 function initTerminateLoader(floatingCart) {
@@ -173,7 +173,8 @@ function initGlobalSearch() {
         },
         searchBoxContainer: searchBox.parentElement.parentElement // the search box's parent
     });
-} function enterResultCallback(query, href, hasCtrlModifier) {
+}
+function enterResultCallback(query, href, hasCtrlModifier) {
 
     if (href) {
         window.location.href = href;
@@ -181,5 +182,23 @@ function initGlobalSearch() {
     else {
         window.location.href=shopUrl+`?query=${document.querySelector("#globalSearch").value}`
     }
+
+}
+
+function buttonLoader(element, loadingText,resetText="",reset=0) {
+    /*loadingText = "Adding to cart...";*/
+    loadingText = "Loading...";
+    element.toggleAttribute("disabled");
+    if (!reset) {
+        element.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${loadingText}`;
+    }
+    else {
+        element.innerHTML = `${resetText}`;
+    }
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve();
+        }, 1000);
+    });
 
 }

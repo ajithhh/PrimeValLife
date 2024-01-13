@@ -21,10 +21,7 @@
                                         <span class="zoom-icon"><i class="fi-rs-search"></i></span>
                                         <!-- MAIN SLIDES -->
                                         <div class="product-image-slider">
-                                            <figure class="border-radius-10">
-                                                <img src="assets/imgs/shop/product-16-2.jpg" alt="product image" />
-                                            </figure>
-
+                                            
                                             @foreach (var image in Model.ProductImages)
                                             {
                                                 <figure class="border-radius-10">
@@ -34,7 +31,6 @@
                                         </div>
                                         <!-- THUMBNAILS -->
                                         <div class="slider-nav-thumbnails">
-                                            <div><img src="assets/imgs/shop/thumbnail-3.jpg" alt="product image" /></div>
                                             @foreach (var image in Model.ProductImages)
                                             {
                                                 <div>

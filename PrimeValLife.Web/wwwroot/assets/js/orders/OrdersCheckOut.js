@@ -16,6 +16,7 @@ const shippingPostCode = document.getElementById("shippingPostCode")
 const shippingPhone = document.getElementById("shippingPhone")
 const paymentMethod = document.querySelector('input[name="payment_option"]:checked')
 const btnPlaceOrder = document.getElementById("btnPlaceOrder")
+const cart = document.getElementById("cart")
 let cartElements = document.querySelectorAll(".cartProduct");
 let qtyUps = document.querySelectorAll("#qty-up")
 let qtyDowns = document.querySelectorAll("#qty-down")
@@ -41,13 +42,13 @@ cartElements.forEach((ele) => {
     })
 
 })
-
-
-
-
-
-
-
+cart.addEventListener("click", (e) => {
+    if (e.target.parentElement.classList.contains("removeCitem")) {
+        removeItem(e);
+        window.location.reload();
+    }
+   }
+);
 //BINDING 
 function bindCheckOutDetails() {
     //Cart Details binded through razor
