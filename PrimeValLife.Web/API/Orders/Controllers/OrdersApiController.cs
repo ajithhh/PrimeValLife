@@ -28,6 +28,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
 
         [HttpPost]
         [Route("CreateOrder")]
+        [Authorize]
         public async Task<ResponseItem<CreateOrderResponse>> CreateOrder([FromBody] CreateOrderRequest request)
         {
             Order order = new Order();
@@ -36,27 +37,6 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             if (HttpContext.User.Identity!.IsAuthenticated)
             {
                 userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            }
-            else
-            {
-                var _iservice = HttpContext.RequestServices.GetService<IIdentityService>();
-                var _ilogger = HttpContext.RequestServices.GetService<ILogger<AccountController>>();
-                AccountController accountController = new AccountController(_iservice, _ilogger);
-                TUTUser TUTuser = new TUTUser() { UserName = request.EmailAttached, Password = request.PasswordAttached };
-
-                var accountResult = await accountController.Register(TUTuser);
-                if (accountResult.Success)
-                {
-                    userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                    user = new User() { Email = request.EmailAttached, Username = request.EmailAttached!, Password = request.PasswordAttached!, UserIdentityId = userIdentityId! };
-                    _context.Users.Add(user);
-                    _context.SaveChanges();
-                }
-                else
-                {
-                    throw new Exception("Cannot Create Order");
-                }
-
             }
             List<OrderItem> orderItems = new List<OrderItem>();
             foreach (var item in request.CartProducts)
@@ -69,6 +49,8 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 order.OrderDate = DateTime.Now;
                 user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
                 order.UserId = user.UserId;
+                order.BillingAddressId =request.BillingAddress;
+                order.ShippingAddressId = request.ShippingAddress;
                 order.OrderItems = orderItems;
                 order.PaymentMethod = request.PaymentMethod;
                 order.Status = OrderStatus.NEW;
@@ -296,7 +278,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
 
         }
 
-
+        [Authorize]
         [Route("getAddress")]
         public async Task<ResponseItem<Address>> getAddress(int id)
         {
@@ -313,6 +295,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             return new ResponseItem<Address> { Success = true, Data = address };
         }
 
+        [Authorize]
         [Route("getUserAddress")]
         public async Task<ResponseItem<List<Address>>> getUserAddress()
         {
@@ -330,6 +313,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
 
         }
 
+        [Authorize]
         [HttpPost("saveAddress")]
         public async Task<ResponseItem<dynamic>> SaveAddress(AddressRequest addressRequest)
         {
@@ -340,7 +324,6 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             {
                 userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
-                address.AddressId = addressRequest.AddressId;
                 address.AddressType =  addressRequest.AddressType;
                 address.FName = addressRequest.FName;
                 address.LName = addressRequest.LName;
@@ -358,7 +341,17 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                    var existingAddress =  _context.Addresses.FirstOrDefault(a=>a.AddressId== addressRequest.AddressId && a.UserId==user.UserId);
                     if (existingAddress != null)
                     {
-                        _context.Update(address);
+                        existingAddress.AddressType = address.AddressType;
+                        existingAddress.FName = address.FName;
+                        existingAddress.LName = address.LName;
+                        existingAddress.AddressLine1 = address.AddressLine1;
+                        existingAddress.AddressLine2 = address.AddressLine2;
+                        existingAddress.City = address.City;
+                        existingAddress.State = address.State;
+                        existingAddress.Country = address.Country;
+                        existingAddress.ZipCode = address.ZipCode;
+                        existingAddress.Phone = address.Phone;
+                        existingAddress.UserId = address.UserId;
                         _context.SaveChanges();
                     }
                    

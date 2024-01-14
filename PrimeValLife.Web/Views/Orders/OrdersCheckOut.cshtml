@@ -260,7 +260,7 @@
                         <div class="accordian" id="addressAcc">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#billingAddressContainer" aria-expanded="true" aria-controls="billingAddressContainer">
+                                    <button class="accordion-button btn " type="button" data-bs-toggle="collapse" data-bs-target="#billingAddressContainer" aria-expanded="true" aria-controls="billingAddressContainer">
                                         Billing Info
                                     </button>
                                 </h2>
@@ -280,7 +280,7 @@
                                                             City, State, PostalCode<br>
                                                             Phone no
                                                         </address>
-                                                        <a class="modify-address" data-address-target="" data-bs-toggle="modal" data-bs-target="#addressModal">Modify</a>
+                                                        <a class="modify-address" data-address-target="" data-bs-toggle="modal"  data-bs-target="#addressModal">Modify</a>
                                                     </div>
                                                 </div>
                                             </li>
@@ -324,48 +324,49 @@
                                         Add New Address
                                     </a>
 
-                                    <div class="modal fade" id="addressModal">
-                                        <!-- Example Code -->
-                                        <div class="modal-dialog">
-                                            <div class="modal-content p-3">
-                                                <div class="d-flex justify-content-between">
-                                                    <input type="hidden" class="form-control border-0 border-bottom" value="0" id="addressId" placeholder="First">
-                                                    <input type="hidden" class="form-control border-0 border-bottom" value="SHIPPING" id="addressType" placeholder="First">
-                                                    <div class="form-floating mb-3 w-50">
-                                                        <input type="text" class="form-control border-0 border-bottom" id="firstName" placeholder="First">
-                                                        <label for="floatingInput">First Name</label>
-                                                    </div>
-                                                    <div class="form-floating w-50">
-                                                        <input type="text" class="form-control border-0 border-bottom" id="lastName" placeholder="Password">
-                                                        <label for="floatingPassword">Last Name</label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-floating  mb-3">
-                                                    <input type="text" class="form-control border-0 border-bottom" id="address1" placeholder="Address">
-                                                    <label for="floatingPassword">Address</label>
-                                                </div>
-                                                <div class="form-floating  mb-3">
-                                                    <input type="text" class="form-control border-0 border-bottom" id="city" placeholder="Address">
-                                                    <label for="floatingPassword">City</label>
-                                                </div>
-                                                <div class="d-flex justify-content-between">
-                                                    <div class="form-floating mb-3 w-50">
-                                                        <input type="text" class="form-control border-0 border-bottom" id="state" placeholder="First">
-                                                        <label for="floatingInput">State</label>
-                                                    </div>
-                                                    <div class="form-floating w-50">
-                                                        <input type="text" class="form-control border-0 border-bottom" id="postalCode" placeholder="Password">
-                                                        <label for="floatingPassword">Postal code</label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-floating  mb-3">
-                                                    <input type="text" class="form-control border-0 border-bottom" id="phone" placeholder="Address">
-                                                    <label for="floatingPassword">Phone</label>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button class="btn btn-success ms-3" id="btnSaveAddress">Save Address</button>
-                                                </div>
+                                   
+                                </div>
+                            </div>
+                            <div class="modal" id="addressModal" tabindex="-1" aria-hidden="true">
+                                <!-- Example Code -->
+                                <div class="modal-dialog">
+                                    <div class="modal-content p-3">
+                                        <div class="d-flex justify-content-between">
+                                            <input type="hidden" class="form-control border-0 border-bottom" value="0" id="addressId" placeholder="First">
+                                            <input type="hidden" class="form-control border-0 border-bottom" value="SHIPPING" id="addressType" placeholder="First">
+                                            <div class="form-floating mb-3 w-50">
+                                                <input type="text" class="form-control border-0 border-bottom" id="firstName" placeholder="First">
+                                                <label for="floatingInput">First Name</label>
                                             </div>
+                                            <div class="form-floating w-50">
+                                                <input type="text" class="form-control border-0 border-bottom" id="lastName" placeholder="Password">
+                                                <label for="floatingPassword">Last Name</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-floating  mb-3">
+                                            <input type="text" class="form-control border-0 border-bottom" id="address1" placeholder="Address">
+                                            <label for="floatingPassword">Address</label>
+                                        </div>
+                                        <div class="form-floating  mb-3">
+                                            <input type="text" class="form-control border-0 border-bottom" id="city" placeholder="Address">
+                                            <label for="floatingPassword">City</label>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="form-floating mb-3 w-50">
+                                                <input type="text" class="form-control border-0 border-bottom" id="state" placeholder="First">
+                                                <label for="floatingInput">State</label>
+                                            </div>
+                                            <div class="form-floating w-50">
+                                                <input type="text" class="form-control border-0 border-bottom" id="postalCode" placeholder="Password">
+                                                <label for="floatingPassword">Postal code</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-floating  mb-3">
+                                            <input type="text" class="form-control border-0 border-bottom" id="phone" placeholder="Address">
+                                            <label for="floatingPassword">Phone</label>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-success ms-3" data-bs-dismiss="modal" id="btnSaveAddress">Save Address</button>
                                         </div>
                                     </div>
                                 </div>

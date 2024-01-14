@@ -4,6 +4,7 @@ using PrimeValLife.Core.Models.Others;
 using PrimeValLife.Core.Models.Users;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 public class Order
 {
@@ -22,4 +23,14 @@ public class Order
     public PaymentAuthorization PaymentAuthorization { get; set; }
     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     public List<OrderTracking> OrderTrackings { get; set; } = new List<OrderTracking>();
+
+    [ForeignKey("Address")]
+    public int BillingAddressId {  get; set; }
+
+    [ForeignKey("Address")]
+    public int ShippingAddressId { get; set; }
+
+    public  Address BillingAddress { get; set; }
+    public  Address ShippingAddress { get; set; }
+
 }

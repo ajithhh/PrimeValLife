@@ -1,21 +1,4 @@
-﻿const billingfname = document.getElementById("billingFName")
-const billinglname = document.getElementById("billingLName")
-const shippingfname = document.getElementById("shippingFName")
-const shippinglname = document.getElementById("shippingLName")
-const billingAddress = document.getElementById("billingAddress")
-const billingAddress2 = document.getElementById("billingAddress2")
-const billingState = document.getElementById("billingState")
-const billingCity = document.getElementById("billingCity")
-const billingPostCode = document.getElementById("billingPostCode")
-const billingPhone = document.getElementById("billingPhone")
-const shippingAddress = document.getElementById("shippingAddress")
-const shippingAddress2 = document.getElementById("shippingAddress2")
-const shippingState = document.getElementById("shippingState")
-const shippingCity = document.getElementById("shippingCity")
-const shippingPostCode = document.getElementById("shippingPostCode")
-const shippingPhone = document.getElementById("shippingPhone")
-const paymentMethod = document.querySelector('input[name="payment_option"]:checked')
-const btnPlaceOrder = document.getElementById("btnPlaceOrder")
+﻿const btnPlaceOrder = document.getElementById("btnPlaceOrder")
 const addressModal = document.querySelector("#addressModal")
 const firstName = addressModal.querySelector("#firstName")
 const addressId = addressModal.querySelector("#addressId")
@@ -38,7 +21,6 @@ let qtyDowns = document.querySelectorAll("#qty-down")
 _init_()
 function _init_() {
     loadAddressDetails();
-   
 }
 //EVENTLISTENER
 
@@ -119,6 +101,8 @@ function placeOrder(e) {
     e.preventDefault()
     primeOrderRequest(getCheckOutDetailsFromUser());
 }
+
+
 function currentCartDetails() {
     let cartProducts = [];
     cartElements.forEach((element) => {
@@ -133,57 +117,25 @@ function currentCartDetails() {
     })
     return cartProducts
 }
+
+//let createNewAccount = document.querySelector("input[id='createaccount']").checked
+//let passwordAttached;
+//let emailAttached;
+//if (createNewAccount) {
+//    passwordAttached = document.querySelector("input[id='passwordAttached']").value
+//    emailAttached = document.querySelector("input[id='emailAttached']").value
+//}
+
 function getCheckOutDetailsFromUser() {
+    let shippingAddress = document.querySelector('.shippingAddress:checked').getAttribute("data-address-target")
+    let billingAddress = document.querySelector('.billingAddress:checked').getAttribute("data-address-target")
     let paymentMethod = document.querySelector("input[name='payment_option']:checked").value
-    let createNewAccount = document.querySelector("input[id='createaccount']").checked
-    let differentShippingAddress = document.querySelector("input[id='differentaddress']").checked
-    let passwordAttached;
-    let emailAttached;
-    if (createNewAccount) {
-        passwordAttached = document.querySelector("input[id='passwordAttached']").value
-        emailAttached = document.querySelector("input[id='emailAttached']").value
-    }
-    var billingAddressDetails = {
-        AddressLine1: billingAddress.value,
-        AddressLine2: billingAddress2.value,
-        FName: billingfname.value,
-        LName: billinglname.value,
-        City: billingCity.value,
-        Phone: billingPhone.value,
-        /*State: billingState.value,*/
-        ZipCode: billingPostCode.value,
-    };
 
-    if (differentShippingAddress) {
-        return {
-            BillingAddress: billingAddressDetails,
-            ShippingAddress: {
-                AddressLine1: shippingAddress.value,
-                AddressLine2: shippingAddress2.value,
-                FName: shippingfname.value,
-                LName: shippinglname.value,
-                City: shippingCity.value,
-                Phone: shippingPhone.value,
-                /*State: shippingState.value,*/
-                ZipCode: shippingPostCode.value
-            },
-            CartProducts: currentCartDetails(),
-            PaymentMethod: paymentMethod,
-            CreateNewAccount: createNewAccount,
-            PasswordAttached: passwordAttached,
-            EmailAttached: emailAttached
-
-        };
-    } else {
-        return {
-            BillingAddress: billingAddressDetails,
-            ShippingAddress: billingAddressDetails,
-            CartProducts: currentCartDetails(),
-            PaymentMethod: paymentMethod,
-            CreateNewAccount: createNewAccount,
-            PasswordAttached: passwordAttached,
-            EmailAttached: emailAttached
-        };
+    return {
+        BillingAddress: billingAddress,
+        ShippingAddress: shippingAddress,
+        CartProducts: currentCartDetails(),
+        PaymentMethod: paymentMethod,
     }
 }
 function  loadAddressDetails() {
@@ -197,7 +149,7 @@ function  loadAddressDetails() {
                 li.innerHTML = `
                 <div class="d-flex flex-row card p-3 m-1">
                     <div class="align-self-center">
-                        <input class="form-check-input top-0 start-0 mt-3 ms-3" type="radio" name="billingAddress" >
+                        <input data-address-target="${entry.addressId}"class="billingAddress form-check-input top-0 start-0 mt-3 ms-3"  type="radio" name="billingAddress" >
                     </div>
                     <div class="ms-4 ml-4">
                         <h5 class="mb-3"><span>${entry.fName}</span> <span>${entry.lName}</span></h5>
@@ -220,7 +172,7 @@ function  loadAddressDetails() {
                 li.innerHTML = `
                 <div class="d-flex flex-row card p-3 m-1">
                     <div class="align-self-center">
-                        <input class="form-check-input top-0 start-0 mt-3 ms-3" type="radio" name="address" >
+                        <input data-address-target="${entry.addressId}" class="shippingAddress form-check-input top-0 start-0 mt-3 ms-3" type="radio" name="address" />
                     </div>
                     <div class="ms-4 ml-4">
                         <h5 class="mb-3"><span>${entry.fName}</span> <span>${entry.lName}</span></h5>   
@@ -268,5 +220,6 @@ function bindAddressWithModal(id) {
         city.value = ""
         state.value = ""
         postalCode.value = ""
+        phone.value=""
     }
 }
