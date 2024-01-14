@@ -17,7 +17,11 @@
     background-color: #6cb483;
     border-color: #6cb483;
 }
-.focus-ring {
-    --bs-focus-ring-color: rgba(var(--bs-success-rgb), .25);
-    --bs-focus-ring-width: 0
+.pvl-logo {
+    width: 100px
+}
+@media (max-width: 770px) {
+    .pvl-logo {
+        width: 60px
+    }
 }
