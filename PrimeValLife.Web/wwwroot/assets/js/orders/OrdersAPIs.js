@@ -49,15 +49,26 @@ function requestAddresses() {
         .then(function (response) {
             // Handle response you get from the API
             if (response.success) {
-               addressList=response.data 
+                addressList = response.data.$values
             } else {
             }
         });
-    return addressList;
+    return new Promise((resolve, reject) => {
+        // Simulating an asynchronous operation, e.g., a network request
+        setTimeout(() => {
+            const success = true; // Set to false to simulate an error
+            if (success) {
+                const addresses = addressList;
+                resolve(addresses);
+            } else {
+                reject(new Error('Failed to fetch addresses'));
+            }
+        }, 1000); // Simulating a delay of 1 second
+    });
 }
 function getAddress(id) {
-    let address;
-    fetch(addressRequestUrl+`?id=${id}`, {
+    let result;
+    fetch(getAddressUrl+`?id=${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -66,9 +77,41 @@ function getAddress(id) {
         .then(function (response) {
             // Handle response you get from the API
             if (response.success) {
-                address = response.data
+                result = response.data
             } else {
             }
         });
-    return address;
+    return new Promise((resolve, reject) => {
+        // Simulating an asynchronous operation, e.g., a network request
+        setTimeout(() => {
+            const success = true; // Set to false to simulate an error
+            if (success) {
+                const address = result;
+                resolve(address);
+            } else {
+                reject(new Error('Failed to fetch addresses'));
+            }
+        }, 1000); // Simulating a delay of 1 second
+    }); 
+}
+
+
+
+function saveAddress(data) {
+    fetch(saveAddressUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    }).then((response) => { return response.json() })
+        .then(function (response) {
+            // Handle response you get from the API
+            if (response.success) {
+                alert("Address saved Successfully")
+                window.location.reload()
+            } else {
+                alert("Address Creation failed")
+            }
+        });
 }

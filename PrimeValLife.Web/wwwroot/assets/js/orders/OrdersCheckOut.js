@@ -18,34 +18,41 @@ const paymentMethod = document.querySelector('input[name="payment_option"]:check
 const btnPlaceOrder = document.getElementById("btnPlaceOrder")
 const addressModal = document.querySelector("#addressModal")
 const firstName = addressModal.querySelector("#firstName")
+const addressId = addressModal.querySelector("#addressId")
+const addressType = addressModal.querySelector("#addressType")
 const lastName = addressModal.querySelector("#lastName")
 const address1 = addressModal.querySelector("#address1")
 const city = addressModal.querySelector("#city")
 const state = addressModal.querySelector("#state")
 const postalCode = addressModal.querySelector("#postalCode")
+const billingAddList = document.querySelector("#billingAddressList")
+const shippingAddList = document.querySelector("#shippingAddressList")
+const btnSaveAddress = document.querySelector("#btnSaveAddress")
 const cart = document.getElementById("cart")
 const addressContainer = document.querySelector("#addressAcc")
 let cartElements = document.querySelectorAll(".cartProduct");
 let qtyUps = document.querySelectorAll("#qty-up")
 let qtyDowns = document.querySelectorAll("#qty-down")
 
+
+_init_()
+function _init_() {
+    loadAddressDetails();
+   
+}
 //EVENTLISTENER
-document.addEventListener("load", () => {
-    if (address) {
-        bindCheckOutDetails();
-    }
-})
+
 btnPlaceOrder.addEventListener("click", placeOrder)
 cartElements.forEach((ele) => {
     ele.querySelector("#qty-up").addEventListener("click", (e) => {
         e.preventDefault()
-        
-            ele.querySelector("#quantity").value =Math.min(parseInt(ele.querySelector("#quantity").value)+1,10)
+
+        ele.querySelector("#quantity").value = Math.min(parseInt(ele.querySelector("#quantity").value) + 1, 10)
         ele.querySelector("#totalPrice").innerText = (parseFloat(ele.querySelector("#unitPrice").innerText) * parseFloat(ele.querySelector("#quantity").value)).toFixed(2)
     })
     ele.querySelector("#qty-down").addEventListener("click", (e) => {
         e.preventDefault()
-        
+
         ele.querySelector("#quantity").value = Math.max(parseInt(ele.querySelector("#quantity").value) - 1, 1)
         ele.querySelector("#totalPrice").innerText = (parseFloat(ele.querySelector("#unitPrice").innerText) * parseFloat(ele.querySelector("#quantity").value)).toFixed(2)
     })
@@ -56,16 +63,30 @@ cart.addEventListener("click", (e) => {
         removeItem(e);
         window.location.reload();
     }
-   }
+}
 );
-addressContainer.addEventListener("click", (e) => {
-    if (e.target.classList.contains("modify-address")) {
-        let aid = e.target.getAttribute("data-address-target")
+addressModal.addEventListener("show.bs.modal", (e) => {
+        let aid = e.relatedTarget.getAttribute("data-address-target")
         bindAddressWithModal(aid)
+})
+btnSaveAddress.addEventListener("click", () => {
+    let address = {
+        FName: firstName.value,
+        LName:lastName.value,
+        AddressId: addressId.value,
+        AddressLine1: address1.value,
+        AddressType:addressType.value,
+        City: city.value,
+        State: state.value,
+        ZipCode: postalCode.value,
+        Phone:phone.value
     }
+    saveAddress(address);
+
 })
 
-//BINDING 
+
+//BINDING
 function bindCheckOutDetails() {
     //Cart Details binded through razor
     if (checkOutModel.billingAddress) {
@@ -108,7 +129,7 @@ function currentCartDetails() {
             }
             cartProducts.push(cartProduct)
         }
-       
+
     })
     return cartProducts
 }
@@ -121,14 +142,14 @@ function getCheckOutDetailsFromUser() {
     if (createNewAccount) {
         passwordAttached = document.querySelector("input[id='passwordAttached']").value
         emailAttached = document.querySelector("input[id='emailAttached']").value
-    }   
+    }
     var billingAddressDetails = {
         AddressLine1: billingAddress.value,
         AddressLine2: billingAddress2.value,
         FName: billingfname.value,
         LName: billinglname.value,
         City: billingCity.value,
-        Phone:billingPhone.value,
+        Phone: billingPhone.value,
         /*State: billingState.value,*/
         ZipCode: billingPostCode.value,
     };
@@ -151,7 +172,7 @@ function getCheckOutDetailsFromUser() {
             CreateNewAccount: createNewAccount,
             PasswordAttached: passwordAttached,
             EmailAttached: emailAttached
-            
+
         };
     } else {
         return {
@@ -165,25 +186,87 @@ function getCheckOutDetailsFromUser() {
         };
     }
 }
-function loadAddressDetails() {
+function  loadAddressDetails() {
 
+    billingAddList.innerHTML = ""
+    shippingAddList.innerHTML = ""
+    requestAddresses().then((addressList) => {
+        addressList.forEach((entry) => {
+            if (entry.addressType == 'BILLING') {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                <div class="d-flex flex-row card p-3 m-1">
+                    <div class="align-self-center">
+                        <input class="form-check-input top-0 start-0 mt-3 ms-3" type="radio" name="billingAddress" >
+                    </div>
+                    <div class="ms-4 ml-4">
+                        <h5 class="mb-3"><span>${entry.fName}</span> <span>${entry.lName}</span></h5>
+                        <address class="mb-2">
+                            ${entry.addressLine1}<br>
+                            ${entry.addressLine2}<br>
+                            ${entry.city}, ${entry.state}, ${entry.zipCode}<br>
+                            ${entry.phone}
+                        </address>
+                        <a class="modify-address" data-address-target="${entry.addressId}" data-bs-toggle="modal" data-bs-target="#addressModal">Modify</a>
+                    </div>
+                </div>
+            `;
 
-    let addressList = requestAddresses()
-    addressList.forEach((address) => {
-        if (address.type == 'BILLING') {
+                // Append the <li> element to the addressList
+                billingAddList.appendChild(li);
+            }
+            else {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                <div class="d-flex flex-row card p-3 m-1">
+                    <div class="align-self-center">
+                        <input class="form-check-input top-0 start-0 mt-3 ms-3" type="radio" name="address" >
+                    </div>
+                    <div class="ms-4 ml-4">
+                        <h5 class="mb-3"><span>${entry.fName}</span> <span>${entry.lName}</span></h5>   
+                        <address class="mb-2">
+                            ${entry.addressLine1}<br>
+                            ${entry.addressLine2}<br>
+                            ${entry.city}, ${entry.state}, ${entry.zipCode}<br>
+                            ${entry.phone}
+                        </address>
+                        <a class="modify-address" data-address-target="${entry.addressId}" data-bs-toggle="modal" data-bs-target="#addressModal">Modify</a>
+                    </div>
+                </div>
+            `;
 
-        }
+                // Append the <li> element to the addressList
+                shippingAddList.appendChild(li);
+
+            }
+
+        });
     })
+
 }
 function bindAddressWithModal(id) {
-    let address;
     if (id > 0) {
-        address = getAddress(id)
-        firstName.value = address.firstName
-        lastName.value = address.lastName
-        address1.value = address.address1
-        city.value = address.city
-        state.value = address.state
-        postalCode.value = address.postalCode
+        getAddress(id).then((address) => {
+            addressType.value = address.addressType
+            addressId.value = address.addressId
+            firstName.value = address.fName
+            lastName.value = address.lName
+            address1.value = address.addressLine1
+            city.value = address.city
+            state.value = address.state
+            phone.value = address.phone
+            postalCode.value = address.zipCode
+        });
+        
+    }
+    else {
+        addressType.value="SHIPPING"
+        addressId.value =0
+        firstName.value = ""
+        lastName.value = ""
+        address1.value = ""
+        city.value = ""
+        state.value = ""
+        postalCode.value = ""
     }
 }

@@ -7,6 +7,7 @@ using PrimeValLife.Core.Models.Users;
 using PrimeValLife.Core.Utilities;
 using PrimeValLife.Web.API.Orders.Models;
 using PrimeValLife.Web.Controllers;
+using System.Net;
 using System.Security.Claims;
 using TUT.IAuth.IServices;
 using TUT.IAuth.Models;
@@ -27,7 +28,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
 
         [HttpPost]
         [Route("CreateOrder")]
-        public async Task<ResponseItem<CreateOrderResponse>> CreateOrder([FromBody]CreateOrderRequest request)
+        public async Task<ResponseItem<CreateOrderResponse>> CreateOrder([FromBody] CreateOrderRequest request)
         {
             Order order = new Order();
             User user;
@@ -47,7 +48,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 if (accountResult.Success)
                 {
                     userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                    user =new User() { Email = request.EmailAttached ,Username=request.EmailAttached!,Password=request.PasswordAttached!,UserIdentityId=userIdentityId!};
+                    user = new User() { Email = request.EmailAttached, Username = request.EmailAttached!, Password = request.PasswordAttached!, UserIdentityId = userIdentityId! };
                     _context.Users.Add(user);
                     _context.SaveChanges();
                 }
@@ -76,7 +77,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 await _context.SaveChangesAsync();
                 foreach (var item in order.OrderItems)
                 {
-                        CartItem cartItem = _context.CartItems.FirstOrDefault(ci=>ci.ProductId == item.ProductId)!;
+                    CartItem cartItem = _context.CartItems.FirstOrDefault(ci => ci.ProductId == item.ProductId)!;
                     _context.Remove(cartItem);
                 }
                 await _context.SaveChangesAsync();
@@ -85,7 +86,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             }
             catch (Exception ex)
             {
-                result = new ResponseItem<CreateOrderResponse>() { Success = false, Data = new CreateOrderResponse() { } ,Errors =ex.Message};
+                result = new ResponseItem<CreateOrderResponse>() { Success = false, Data = new CreateOrderResponse() { }, Errors = ex.Message };
             }
             return null;
         }
@@ -254,7 +255,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                     tempCart = new TempCart() { SessionId = anonymousUserId };
                     _context.TempCarts.Add(tempCart);
                     _context.SaveChanges();
-                    return new ResponseItem<List<CartItem>>() { Success=true,Data=new List<CartItem>()};
+                    return new ResponseItem<List<CartItem>>() { Success = true, Data = new List<CartItem>() };
                 }
                 else
                 {
@@ -295,5 +296,82 @@ namespace PrimeValLife.Web.API.Orders.Controllers
 
         }
 
+
+        [Route("getAddress")]
+        public async Task<ResponseItem<Address>> getAddress(int id)
+        {
+            User user = null;
+            string userIdentityId = null;
+            Address address = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
+
+                address = _context.Addresses.FirstOrDefault(a => a.AddressId == id && a.UserId == user.UserId);
+            }
+            return new ResponseItem<Address> { Success = true, Data = address };
+        }
+
+        [Route("getUserAddress")]
+        public async Task<ResponseItem<List<Address>>> getUserAddress()
+        {
+            User user = null;
+            string userIdentityId = null;
+            List<Address> addresses = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
+
+                addresses = _context.Addresses.Where(a => a.UserId == user.UserId).ToList();
+            }
+            return new ResponseItem<List<Address>> { Success = true, Data = addresses };
+
+        }
+
+        [HttpPost("saveAddress")]
+        public async Task<ResponseItem<dynamic>> SaveAddress(AddressRequest addressRequest)
+        {
+            User user = null;
+            Address address = new Address();
+            string userIdentityId = null;
+            if (HttpContext.User.Identity!.IsAuthenticated)
+            {
+                userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
+                address.AddressId = addressRequest.AddressId;
+                address.AddressType =  addressRequest.AddressType;
+                address.FName = addressRequest.FName;
+                address.LName = addressRequest.LName;
+                address.AddressLine1 = addressRequest.AddressLine1;
+                address.AddressLine2 = addressRequest.AddressLine1;
+                address.City = addressRequest.City;
+                address.State = addressRequest.State;
+                address.Country = "INDIA";
+                address.ZipCode = addressRequest.ZipCode;
+                address.Phone = addressRequest.Phone;
+                address.UserId = user.UserId;
+                
+                if (addressRequest.AddressId > 0)
+                {
+                   var existingAddress =  _context.Addresses.FirstOrDefault(a=>a.AddressId== addressRequest.AddressId && a.UserId==user.UserId);
+                    if (existingAddress != null)
+                    {
+                        _context.Update(address);
+                        _context.SaveChanges();
+                    }
+                   
+                }
+                else if(address.AddressId==0)
+                {
+                    address.UserId = user.UserId;
+                    _context.Add(address);
+                    _context.SaveChanges();
+                }
+                return new ResponseItem<dynamic> { Success = true, Data = null };
+            }
+            return new ResponseItem<dynamic> { Success = false, Data = null };
+        }
     }
 }
