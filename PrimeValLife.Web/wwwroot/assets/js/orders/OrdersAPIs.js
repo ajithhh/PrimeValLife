@@ -36,4 +36,39 @@ function confirmShippingAdddress(data) {
                 alert("Address Could not be added")
             }
         });
-    }
+}
+
+function requestAddresses() {
+    let addressList;
+    fetch(addressRequestUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }        
+    }).then((response) => { return response.json() })
+        .then(function (response) {
+            // Handle response you get from the API
+            if (response.success) {
+               addressList=response.data 
+            } else {
+            }
+        });
+    return addressList;
+}
+function getAddress(id) {
+    let address;
+    fetch(addressRequestUrl+`?id=${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }).then((response) => { return response.json() })
+        .then(function (response) {
+            // Handle response you get from the API
+            if (response.success) {
+                address = response.data
+            } else {
+            }
+        });
+    return address;
+}

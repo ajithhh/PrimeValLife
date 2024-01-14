@@ -16,4 +16,8 @@
 .form-check-input:checked {
     background-color: #6cb483;
     border-color: #6cb483;
-}   
+}
+.focus-ring {
+    --bs-focus-ring-color: rgba(var(--bs-success-rgb), .25);
+    --bs-focus-ring-width: 0
+}

@@ -16,10 +16,19 @@ const shippingPostCode = document.getElementById("shippingPostCode")
 const shippingPhone = document.getElementById("shippingPhone")
 const paymentMethod = document.querySelector('input[name="payment_option"]:checked')
 const btnPlaceOrder = document.getElementById("btnPlaceOrder")
+const addressModal = document.querySelector("#addressModal")
+const firstName = addressModal.querySelector("#firstName")
+const lastName = addressModal.querySelector("#lastName")
+const address1 = addressModal.querySelector("#address1")
+const city = addressModal.querySelector("#city")
+const state = addressModal.querySelector("#state")
+const postalCode = addressModal.querySelector("#postalCode")
 const cart = document.getElementById("cart")
+const addressContainer = document.querySelector("#addressAcc")
 let cartElements = document.querySelectorAll(".cartProduct");
 let qtyUps = document.querySelectorAll("#qty-up")
 let qtyDowns = document.querySelectorAll("#qty-down")
+
 //EVENTLISTENER
 document.addEventListener("load", () => {
     if (address) {
@@ -49,6 +58,13 @@ cart.addEventListener("click", (e) => {
     }
    }
 );
+addressContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("modify-address")) {
+        let aid = e.target.getAttribute("data-address-target")
+        bindAddressWithModal(aid)
+    }
+})
+
 //BINDING 
 function bindCheckOutDetails() {
     //Cart Details binded through razor
@@ -73,7 +89,6 @@ function bindCheckOutDetails() {
     //}
 
 }
-
 function placeOrder(e) {
     //check current availability
     //Confirm Address
@@ -83,7 +98,6 @@ function placeOrder(e) {
     e.preventDefault()
     primeOrderRequest(getCheckOutDetailsFromUser());
 }
-
 function currentCartDetails() {
     let cartProducts = [];
     cartElements.forEach((element) => {
@@ -98,7 +112,6 @@ function currentCartDetails() {
     })
     return cartProducts
 }
-
 function getCheckOutDetailsFromUser() {
     let paymentMethod = document.querySelector("input[name='payment_option']:checked").value
     let createNewAccount = document.querySelector("input[id='createaccount']").checked
@@ -150,5 +163,27 @@ function getCheckOutDetailsFromUser() {
             PasswordAttached: passwordAttached,
             EmailAttached: emailAttached
         };
+    }
+}
+function loadAddressDetails() {
+
+
+    let addressList = requestAddresses()
+    addressList.forEach((address) => {
+        if (address.type == 'BILLING') {
+
+        }
+    })
+}
+function bindAddressWithModal(id) {
+    let address;
+    if (id > 0) {
+        address = getAddress(id)
+        firstName.value = address.firstName
+        lastName.value = address.lastName
+        address1.value = address.address1
+        city.value = address.city
+        state.value = address.state
+        postalCode.value = address.postalCode
     }
 }
