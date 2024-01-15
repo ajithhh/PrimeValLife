@@ -49,7 +49,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 order.OrderDate = DateTime.Now;
                 user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
                 order.UserId = user.UserId;
-                order.BillingAddressId =request.BillingAddress;
+                order.BillingAddressId = request.BillingAddress;
                 order.ShippingAddressId = request.ShippingAddress;
                 order.OrderItems = orderItems;
                 order.PaymentMethod = request.PaymentMethod;
@@ -59,7 +59,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 await _context.SaveChangesAsync();
                 foreach (var item in order.OrderItems)
                 {
-                    CartItem cartItem = _context.CartItems.FirstOrDefault(ci => ci.ProductId == item.ProductId)!;
+                    CartItem cartItem = _context.CartItems.Include(ci=>ci.Cart).FirstOrDefault(ci => ci.Cart.UserId == user.UserId && ci.ProductId==item.ProductId )!;
                     _context.Remove(cartItem);
                 }
                 await _context.SaveChangesAsync();
@@ -324,7 +324,7 @@ namespace PrimeValLife.Web.API.Orders.Controllers
             {
                 userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 user = _context.Users.FirstOrDefault(u => u.UserIdentityId == userIdentityId)!;
-                address.AddressType =  addressRequest.AddressType;
+                address.AddressType = addressRequest.AddressType;
                 address.FName = addressRequest.FName;
                 address.LName = addressRequest.LName;
                 address.AddressLine1 = addressRequest.AddressLine1;
@@ -335,13 +335,12 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 address.ZipCode = addressRequest.ZipCode;
                 address.Phone = addressRequest.Phone;
                 address.UserId = user.UserId;
-                
+
                 if (addressRequest.AddressId > 0)
                 {
-                   var existingAddress =  _context.Addresses.FirstOrDefault(a=>a.AddressId== addressRequest.AddressId && a.UserId==user.UserId);
+                    var existingAddress = _context.Addresses.FirstOrDefault(a => a.AddressId == addressRequest.AddressId && a.UserId == user.UserId);
                     if (existingAddress != null)
                     {
-                        existingAddress.AddressType = address.AddressType;
                         existingAddress.FName = address.FName;
                         existingAddress.LName = address.LName;
                         existingAddress.AddressLine1 = address.AddressLine1;
@@ -354,9 +353,9 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                         existingAddress.UserId = address.UserId;
                         _context.SaveChanges();
                     }
-                   
+
                 }
-                else if(address.AddressId==0)
+                else if (address.AddressId == 0)
                 {
                     address.UserId = user.UserId;
                     _context.Add(address);
@@ -365,6 +364,28 @@ namespace PrimeValLife.Web.API.Orders.Controllers
                 return new ResponseItem<dynamic> { Success = true, Data = null };
             }
             return new ResponseItem<dynamic> { Success = false, Data = null };
+        }
+
+        [Route("CreateAccount")]
+        public async Task<ResponseItem<dynamic>> CreateAccount(CreateAccountRequest request)
+        {
+            var _iservice = HttpContext.RequestServices.GetService<IIdentityService>();
+            var _ilogger = HttpContext.RequestServices.GetService<ILogger<AccountController>>();
+            string userIdentityId;
+            User user;
+            AccountController accountController = new AccountController(_iservice, _ilogger);
+            TUTUser TUTuser = new TUTUser() { UserName = request.Email, Password = request.Password };
+            var accountResult = await accountController.Register(TUTuser);
+            if (accountResult.Success)
+            {
+                userIdentityId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                user = new User() { Email = request.Email, Username = request.Email!, Password = request.Password!, UserIdentityId = userIdentityId! };
+                _context.Users.Add(user);
+                _context.SaveChanges();
+                return new ResponseItem<dynamic> { Success = true, Data = null };
+            }
+            return new ResponseItem<dynamic> { Success = false, Data = null };
+
         }
     }
 }

@@ -115,3 +115,20 @@ function saveAddress(data) {
             }
         });
 }
+function CreateAccount(request) {
+    fetch(createAccountUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request)
+    }).then((response) => { return response.json() })
+        .then(function (response) {
+            // Handle response you get from the API
+            if (response.success) {
+                window.location.reload()
+            } else {
+                
+            }
+        });
+}

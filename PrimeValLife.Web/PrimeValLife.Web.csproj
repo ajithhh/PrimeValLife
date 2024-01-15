@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Orders\_QuickAccount.cshtml" />
     <Content Remove="Views\Shared\_ProductWrap.cshtml" />
   </ItemGroup>
 
@@ -30,11 +31,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Orders\_QuickAccount.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\_ProductWrap.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Views\Home\_ProductWrap.cshtml" />
+    <None Include="Views\Shared\_QuickAccount.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Orders\_QuickAccount.cshtml" />
   </ItemGroup>
 
 </Project>

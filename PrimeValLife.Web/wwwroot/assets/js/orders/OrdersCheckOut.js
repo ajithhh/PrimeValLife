@@ -11,8 +11,12 @@ const postalCode = addressModal.querySelector("#postalCode")
 const billingAddList = document.querySelector("#billingAddressList")
 const shippingAddList = document.querySelector("#shippingAddressList")
 const btnSaveAddress = document.querySelector("#btnSaveAddress")
+const btnCreateAccount = document.querySelector("#btnCreateAccount")
+const email = document.querySelector("#email")
+const password = document.querySelector("#password")
 const cart = document.getElementById("cart")
 const addressContainer = document.querySelector("#addressAcc")
+const netPayment =document.querySelector("#netPayment")
 let cartElements = document.querySelectorAll(".cartProduct");
 let qtyUps = document.querySelectorAll("#qty-up")
 let qtyDowns = document.querySelectorAll("#qty-down")
@@ -21,8 +25,10 @@ let qtyDowns = document.querySelectorAll("#qty-down")
 _init_()
 function _init_() {
     loadAddressDetails();
+    updateCartTotal();
 }
 //EVENTLISTENER
+cart.addEventListener("click",updateCartTotal)
 
 btnPlaceOrder.addEventListener("click", placeOrder)
 cartElements.forEach((ele) => {
@@ -48,7 +54,8 @@ cart.addEventListener("click", (e) => {
 }
 );
 addressModal.addEventListener("show.bs.modal", (e) => {
-        let aid = e.relatedTarget.getAttribute("data-address-target")
+    let aid = e.relatedTarget.getAttribute("data-address-target")
+        addressType.value=e.relatedTarget.getAttribute("data-address-type")
         bindAddressWithModal(aid)
 })
 btnSaveAddress.addEventListener("click", () => {
@@ -66,6 +73,17 @@ btnSaveAddress.addEventListener("click", () => {
     saveAddress(address);
 
 })
+if (btnCreateAccount) {
+    btnCreateAccount.addEventListener("click", (e) => {
+        e.preventDefault();
+        createAccountRequest = {
+            Email: email.value,
+            password: password.value
+        };
+        CreateAccount(createAccountRequest);
+
+    })
+}
 
 
 //BINDING
@@ -100,6 +118,8 @@ function placeOrder(e) {
     //Post Order 
     e.preventDefault()
     primeOrderRequest(getCheckOutDetailsFromUser());
+    window.location.reload()
+
 }
 
 
@@ -143,13 +163,14 @@ function  loadAddressDetails() {
     billingAddList.innerHTML = ""
     shippingAddList.innerHTML = ""
     requestAddresses().then((addressList) => {
-        addressList.forEach((entry) => {
-            if (entry.addressType == 'BILLING') {
-                const li = document.createElement('li');
-                li.innerHTML = `
+        if (addressList.length > 0) {
+            addressList.forEach((entry) => {
+                if (entry.addressType == 'BILLING') {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
                 <div class="d-flex flex-row card p-3 m-1">
                     <div class="align-self-center">
-                        <input data-address-target="${entry.addressId}"class="billingAddress form-check-input top-0 start-0 mt-3 ms-3"  type="radio" name="billingAddress" >
+                        <input data-address-target="${entry.addressId}"class="billingAddress form-check-input top-0 start-0 mt-3 ms-3"  type="radio" name="billingAddress" checked>
                     </div>
                     <div class="ms-4 ml-4">
                         <h5 class="mb-3"><span>${entry.fName}</span> <span>${entry.lName}</span></h5>
@@ -163,16 +184,22 @@ function  loadAddressDetails() {
                     </div>
                 </div>
             `;
+                    
 
-                // Append the <li> element to the addressList
-                billingAddList.appendChild(li);
-            }
-            else {
-                const li = document.createElement('li');
-                li.innerHTML = `
+                    // Append the <li> element to the addressList
+                    billingAddList.appendChild(li);
+                    document.querySelector("[data-address-type='BILLING']").hidden = true
+                }
+                if (document.querySelector("input .shippingAddress:checked")) {
+                    document.querySelector("input .shippingAddress:checked").checked = false
+                }
+                
+                    
+                    const li = document.createElement('li');
+                    li.innerHTML = `
                 <div class="d-flex flex-row card p-3 m-1">
                     <div class="align-self-center">
-                        <input data-address-target="${entry.addressId}" class="shippingAddress form-check-input top-0 start-0 mt-3 ms-3" type="radio" name="address" />
+                        <input data-address-target="${entry.addressId}" class="shippingAddress form-check-input top-0 start-0 mt-3 ms-3" type="radio" name="address" checked/>
                     </div>
                     <div class="ms-4 ml-4">
                         <h5 class="mb-3"><span>${entry.fName}</span> <span>${entry.lName}</span></h5>   
@@ -187,12 +214,14 @@ function  loadAddressDetails() {
                 </div>
             `;
 
-                // Append the <li> element to the addressList
-                shippingAddList.appendChild(li);
+                    // Append the <li> element to the addressList
+                    shippingAddList.appendChild(li);
 
-            }
-
-        });
+               
+               
+            });
+        }
+        
     })
 
 }
@@ -212,7 +241,6 @@ function bindAddressWithModal(id) {
         
     }
     else {
-        addressType.value="SHIPPING"
         addressId.value =0
         firstName.value = ""
         lastName.value = ""
@@ -222,4 +250,16 @@ function bindAddressWithModal(id) {
         postalCode.value = ""
         phone.value=""
     }
+}
+
+function updateCartTotal() {
+    let eles = cart.querySelectorAll(".totalPrice")
+    let total=0;
+    eles.forEach((ele) => {
+        total= total + parseFloat(ele.innerText)
+    })
+    if (total>0) {
+        netPayment.innerText = total.toFixed(2)
+    }
+    
 }
